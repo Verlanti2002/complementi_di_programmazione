@@ -1,0 +1,88 @@
+Complementi di Programmazione (Python)
+
+23/09/24
+
+Linguaggi statici: linguaggio di programmazione in cui i tipi delle variabili sono verificati a tempo di compilazione anzichè a tempo di esecuzione
+    - Linguaggi ad alto livello
+    - Linguaggi compilati
+
+Linguaggi dinamici: linguaggio di programmazione in cui i tipi delle variabili vengono verificati a tempo di esecuzione anzichè a tempo di compilazione
+    - Linguaggi ad alto livello
+    - Linguaggio interpretato
+
+Linguaggio compilato: codice sorgente --> COMPILAZIONE --> linguaggio macchina --> ESECUZIONE --> programma eseguibile
+Vantaggi: maggiore efficienza e più veloce nella fase di esecuzione
+Svantaggi: dipendenza dalla piattaforma del codice binario generato
+
+Linguaggio interpretato: codice sorgente --> ESECUZIONE (INTERPRETE) --> programma eseguibile
+Durante la fase di esecuzione l'interprete converte le istruzioni del file sorgente in linguaggio macchina
+Vantaggi: sviluppo più veloce, flessibile e cross-platform (dato che sono gli interpreti ad eseguire il codice, esso stesso risulta una piattaforma indipendente)
+Svantaggi: velocità di esecuzione ridotta
+
+Linguaggi dinamici 
+
+Caratteristiche linguaggi dinamici
+- Può avere una fase di compilazione, il cui il codice sorgente viene tradotto in un formato intermedio indipendente dall'architettura (es. bytecode) 
+- Il formato intermendio è interpretato --> linguaggio portabile
+- Tipizzazione dinamica --> i tipi di dato possono mutare a runtime
+
+Vantaggi
+- Tipizzazione dinamica: non è necessario dichiarare esplicitamente il tipo di una variabile, inoltre può cambiare durante l'esecuzione del programma
+- Controllo dei tipi a runtime: i controlli sui tipi e le conversioni vengono effettuati durante l'esecuzione del programma
+- Flessibilità: più flessibili e meno rigidi rispetto ai linguaggi con tipizzazione statica
+- Maggiore facilità di debug: più facile esaminare il comportamento del programma poichè i tipi vengono verificati a runtime
+- Sviluppo più rapido
+- Tipicamente sintassi più semplice
+
+Svantaggi:
+- Prestazioni inferiori: la verifica dei tipi e l'allocazione della memoria possono comportare un overhead significativo durante l'esecuzione del programma
+- Errori a runtime: gli errori di tipo possono emergere solo durante l'esecuzione del programma, il che può essere problematico
+- Difficoltà nella manutenzione del codice: la tipizzazione dinamica rende la manutenzione del codice più complessa 
+- Maggiore probabilità di bug: maggiore probabilità di errore a causa della mancanza di verifica statica dei tipi
+
+Type Check
+- Statico
+    - idenfifica errori a tempo di compilazione
+    - previene errori a runtime
+    - più performante
+- Dinamico
+    - più flessibile: costrutti illegali in linguaggi statici (ES. y=5; y="ciao")
+    - più rapida prototipazione
+
+Tipizzazione forte
+Si ha quando il linguaggio di programmazione impone rigorosamente regole sulla conversione dei tipi di dati e sulla compatibilità dei tipi
+- Conversioni esplicite
+- Operazioni solo tra tipi compatibili
+- Obbligo di dichiarare il tipo delle variabili
+
+Tipizzazione debole 
+Il linguaggio può consentire conversioni implicitamente tra tipi di dati e può essere più permissivo nella gestione dei tipi
+- Conversioni implicite
+- Operazioni permesse tra tipi incongruenti
+- Le variabili possono non avere un tipo esplicito
+
+Tipizzazione safe 
+Un linguaggio di programmazione è considerato adottare una "tipizzazione safe" dei dati se impedisce che un'operazione di casting implicito causi un crash
+
+Tipizzazione unsafe
+Un linguaggio di programmazione è considerato adottare una tipizzazione unsafe dei dati se non impedisce che un'operazione di casting implicito causi un crash
+
+PYTHON
+
+Python è un linguaggio di programmazione dinamico ad alto livello, completamente orientato agli oggetti
+    - NB: PYTHON E' UN LINGUAGGIO COMPILATO E INTERPRETATO
+    - Ogni variabile (cha ha un tipo) è un oggetto
+
+Esempio:
+
+function calcola(a,b,c) => return (a+b)*c
+
+e1 = calcola(1,2,3)
+e2 = calcola([1,2,3],[4,5,6],2)
+e3 = calcola(‘mele ’, ‘e arance’, 3)
+
+e1 → 9
+e2 → [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6]
+e3 → "mele e arance mele e arance mele e arance"
+
+26/09/24
