@@ -1,0 +1,77 @@
+Protocolli e Architetture di Rete   
+USERNAME: PAR2425
+PASSWORD: dieMiephie3b
+
+23/09/24
+
+Rete: può essere definita ricorsivamente --> condivisa
+- Due o più nodi connessi tramite collegamenti
+- Due o più reti connesse tramite nodi
+
+Componenti fondamentali di una Rete
+- NODI
+    - Host
+        nodo terminale connesso a uno dei capi della comunicazione (mittente, destinatario) --> eterogenei
+    - Switch, Bridge, Router...
+        nodi intermedi che abilitano la comunicazione tra host
+COLLEGAMENTO (LINK)
+    - Cablato (Wired): cavi fibra ottica, coassiali, ...
+    - Non cablato (Wireless): Wi-fi, Bluetooth, ...
+
+Esempi di rete:
+LAN (Local Area Netowrk): Rete locale
+WAN (Wide Area Netowrk): Rete geografica
+
+Obiettivo: trasferire un messaggio (insieme di bit) da un host all'altro
+
+PROTOCOLLO
+Tutte le comunicazioni sono regolate mediante protocolli
+Protocollo: insieme di regole e convenzioni seguite da entità, dislocate su nodi distinti, che intendono comunicare per svolgere un compito comune
+Tali regole hanno l’obiettivo di assicurare una cooperazione efficiente ed affidabile per la comunicazione tra nodi tenendo conto
+delle caratteristiche tipiche di un sistema distribuito (banda di trasmissione limitata, ritardi variabili, errori nella comunicazione, ...)
+
+- Sintassi: insieme e struttura dei comandi e delle risposte (formato dei messaggi)
+- Semantica: significato dei comandi da effettuare al momento della trasmissione e ricezione dei messaggi (contesto corretto)
+- Temporizzazione: specifica delle possibili sequenze temporali di emissione dei comandi e messaggi (sequenza temporale ammissibile)
+
+Obiettivi della comunicazione
+Trasferimento di un messaggio (insieme di bit) da un host all'altro, garantendo: 
+- PRESTAZIONI: massima velocità possibile
+- AFFIDABILITA': che si possano superare guasti o malfunzionamenti
+- SICUREZZA: la trasmissione deve essere sicura
+
+Stack (o suite) di protocolli: insieme di livelli in cui ogni livello cerca di risolvere in modo indipendente un sottoproblema
+Nelle architetture di rete ci sono diversi tipi di funzionalità associate a ruoli diversi
+
+Logica applicativa: implementazione di logiche applicative specializzate (Web, ...)
+Comunicazione fra applicazioni: processi in esecuzione sugli host --> Affidabili (ma più lente) - Non affidabili (ma veloci)
+Comunicazione fra reti: nodi che risiedono in reti differenti
+Comunicazione fra nodi: nodi che risiedono nella medesima rete  
+
+Ciascun protocollo, ad un certo livello, ha due interfacce "interne" (verso il livello superiore ed inferiore) ed una
+interfaccia "esterna" verso il livello equivalente di un altro nodo
+Le interfacce "interne" si occupano di trasferire i dati da un livello all'altro
+L'interfaccia "esterna" rappresenta la richiesta/chiusura della connessione (astratta)
+
+                            Protocollo livello N+1
+    Interfaccia "interna"
+                            Protocollo livello N    -->    Interfaccia "esterna"
+    Interfaccia "interna"
+                            Protocollo livello N-1
+
+                            Mezzo fisico (hardware)
+
+La comunicazione avviene logicamente tra protocolli che si trovano allo stesso livello
+
+Slide 40
+
+Communication Unit in Packet Switching: PDU
+Ogni pacchetto è costituito da:
+    - Protocol Control Information (PCI) --> header
+        insieme di metadati necessari al corretto funzionamento del protocollo stesso
+    - Service Data Unit (SDU) --> payload
+        il vero contenuto informativo scambiato
+PCI + SDU = PDU (Protocol Data Unit)
+Messaggio: SDU (payload) + PCI (header)
+
+Payload = (payload + header) del livello precedente
