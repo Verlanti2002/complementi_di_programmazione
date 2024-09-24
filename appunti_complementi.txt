@@ -40,7 +40,7 @@ Svantaggi:
 - Difficoltà nella manutenzione del codice: la tipizzazione dinamica rende la manutenzione del codice più complessa 
 - Maggiore probabilità di bug: maggiore probabilità di errore a causa della mancanza di verifica statica dei tipi
 
-Type Check
+Type Checking
 - Statico
     - idenfifica errori a tempo di compilazione
     - previene errori a runtime

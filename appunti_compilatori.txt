@@ -1,0 +1,48 @@
+24/09/24
+
+Compilatore: componente di una cosidetta toolchain di programmi il cui obiettivo è creare eseguibili a partire dal programma scritto
+
+precompilatore: include le librerie, definizione/espansione di macro 
+assemblatore: genera il codice oggetto 
+linker (statico e dinamico): collega le librerie statiche e crea l'eseguibile finale
+
+sorgente --> PREPROCESSORE --> pre elaborato --> COMPILATORE --> assembly --> ASSEMBLER --> codice oggetto --> LINKER (librerie statiche) --> eseguibile --> processo in esecuzione (input: librerie dinamiche)
+
+cpp -o hw.ii hw.cpp --> preprocessore
+cc1plus --> compilatore
+as -o hw.o hw.s --> assembler
+g++ -v -o hw.o --> linker
+./hw --> esecuzione
+
+Compilatore
+sorgente --> compilatore --> eseguibile --> macchina fisica (interpreta il binario) --> output
+
+Interprete
+- legge il testo sorgente di un programma, lo analizza e lo esegue mentre procede
+- procedimento inefficiente, spende infatti molto tempo nell'analisi dell'input
+sorgente --> interprete --> output
+
+In generale, un'implementazione interpretata include anche un traduttore che è essenzialmente identico al front-end di un compilatore
+
+OSSERVAZIONE: il bytecode è tipicamente l'assembler della macchina virtuale
+
+Compilatore: modulo che effettua la traduzione da sorgente ad una qualche rappresentazione intermedia
+    - front-end (compilatori e interpreti): prende il sorgente e produce una sua rappresentazione intermedia indipendente dal linguaggio e dalla macchina
+    - middle-end: esegue un'ottimizzazione del codice intermedio
+    - back-end: produce il codice per l'architettura target
+
+Il front/middle/back-end è composto da 4/1/2 fasi
+sequenza di caratteri --> ANALIZZATORE LESSICALE --> sequenza di token --> ANALIZZATORE SINTATTICO --> albero sintattico --> GENERATORE DI CODICE INTERMEDIO --> rappresentazione intermedia
+
+ANALIZZATORE LESSICALE (LEXER): raggruppa sequenze di caratteri in oggetti (TOKEN)
+ANALIZZATORE SINTATTICO (PARSER): start run, prende una sequenza di token e indica se essi formano una struttura linguistica legale del linguaggio (correttezza sintattica)
+ANALIZZATORE SEMANTICO: analisi dei tipi, controlla la corrispondenza del numero di parametri di una procedura
+GENERATORE DI CODICE INTERMEDIO: produce un codice lineare
+TABELLA DEI SIMBOLI: struttura dati (dizionario) che memorizza i simboli incontrati nell'analisi del sorgente
+
+Type Checking: controllo dei tipi (statico --> controllo a tempo di compilazione e dinamico --> controllo a tempo di esecuzione)
+Scoping rules: regole che descrivono la visibilità delle variabili all'interno del programma sorgente
+Ambiente: mapping fra nomi e locazioni di memoria
+Memoria: mapping fra locazioni di memoria e valori
+Linguaggio funzionale: mapping diretto tra nome e valore, il programmatore ha visibilità del solo ambiente
+l-value: deve avere una locazione ben precisa in memoria (tipo un identificatore, un'espressione non è un l-value o r-value)
