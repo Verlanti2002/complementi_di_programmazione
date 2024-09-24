@@ -1,38 +1,64 @@
 24/09/24
 
-Compilatore: componente di una cosidetta toolchain di programmi il cui obiettivo è creare eseguibili a partire dal programma scritto
+Compilatore: componente di una cosidetta "toolchain" di programmi il cui obiettivo è creare eseguibili a partire dal programmi
 
-precompilatore: include le librerie, definizione/espansione di macro 
-assemblatore: genera il codice oggetto 
-linker (statico e dinamico): collega le librerie statiche e crea l'eseguibile finale
+Altri componenti della "toolchain":
+    - precompilatore: inclusione di file, definizione/espansione di macro e compilazione condizionale
+    - assemblatore: genera il codice oggetto 
+    - linker (statico e dinamico): collega le librerie statiche e crea l'eseguibile finale
 
-sorgente --> PREPROCESSORE --> pre elaborato --> COMPILATORE --> assembly --> ASSEMBLER --> codice oggetto --> LINKER (librerie statiche) --> eseguibile --> processo in esecuzione (input: librerie dinamiche)
+sorgente (hw.cpp) --> PREPROCESSORE --> pre elaborato o translation unit (hw.ii) --> COMPILATORE (cc1plus) --> assembly (hw.s) --> ASSEMBLER (as) --> codice oggetto (hw.o) --> LINKER (ld) --> eseguibile (hw) --> processo in esecuzione (input: librerie dinamiche) --> output
 
-cpp -o hw.ii hw.cpp --> preprocessore
-cc1plus --> compilatore
-as -o hw.o hw.s --> assembler
-g++ -v -o hw.o --> linker
-./hw --> esecuzione
+GCC (GNU Compiler Collection): suite in grado di compilare principalmente programmi in C/C++
+    - cpp: preprocessore C/C++
+    - cc1/cc1plus: compilatore vero e proprio
+    - as: programma assemblatore
+    - ld: linker
+
+- Preprocessing
+    > cpp -o hw.ii hw.cpp
+- Compilazione
+    > cc1plus -o hw.s hw.ii 2>/dev/null
+- Assemblaggio
+    > as -o hw.o hw.s
+- Linking (collect2: invocatore del linker)
+    > g++ -v -o hw.o --> il driver g++ invoca il linker usando il comando collect2
+- Esecuzione
+    ./hw
+
+Compilatore vs Interprete
 
 Compilatore
+Nei linguaggi compilati, il codice sorgente viene tradotto interamente in codice macchina da un programma chiamato compilatore prima dell'esecuzione
 sorgente --> compilatore --> eseguibile --> macchina fisica (interpreta il binario) --> output
+    - Compilazione anticipata: prima compilazione poi esecuzione
+    - Velocità di esecuzione: l'esecuzione è più veloce in quanto il codice è già tradotto in istruzioni macchina
+    - Verifica di errori: la maggior parte degli errori (sintattici o semantici) viene rilevata durante la compilazione
+    - Portabilità limitata: il codice compilato è strettamente legato all'architettura della macchina su cui è stato compilato 
 
 Interprete
-- legge il testo sorgente di un programma, lo analizza e lo esegue mentre procede
-- procedimento inefficiente, spende infatti molto tempo nell'analisi dell'input
+Nei linguaggi interpretati, il codice sorgente viene tradotto ed eseguito riga per riga da un programma chiamato interprete.
+L'interprete legge il codice sorgente e lo esegue direttamente, senza produrre un file eseguibile seperato
 sorgente --> interprete --> output
+    - Velocità di esecuzione: più lento nell'esecuzione, poichè l'interprete deve tradurre ogni istruzione mentre viene eseguita (inefficiente, spende molto tempo nell'analisi dell'input)
+    - Flessibilità: maggiore flessibilità e portabilità poichè l'interprete può essere eseguito su diverse piattaforme
+    - Debugging più semplice: eseguendo il codice riga per riga risulta più facile testare piccole porzioni di codice
+    - Portabilità: il codice sorgente può essere eseguito su qualsiasi macchina che abbia un interprete compatibile 
+
+Linguaggi ibridi: vengono prima compilati in bytecode, un formato intermedio, e poi eseguiti da una macchina virtuale (JVM per Java)
+Anche Python a volte utilizza una compilazione intermedia in bytecode (.pyc) ma viene comunque interpretato da una macchina virtuale (l'interprete Python)
 
 In generale, un'implementazione interpretata include anche un traduttore che è essenzialmente identico al front-end di un compilatore
 
 OSSERVAZIONE: il bytecode è tipicamente l'assembler della macchina virtuale
 
-Compilatore: modulo che effettua la traduzione da sorgente ad una qualche rappresentazione intermedia
+Compilatore: modulo che effettua la traduzione da sorgente ad una qualche rappresentazione intermedia, esso è suddiviso a sua volta in 3 moduli:
     - front-end (compilatori e interpreti): prende il sorgente e produce una sua rappresentazione intermedia indipendente dal linguaggio e dalla macchina
     - middle-end: esegue un'ottimizzazione del codice intermedio
     - back-end: produce il codice per l'architettura target
 
 Il front/middle/back-end è composto da 4/1/2 fasi
-sequenza di caratteri --> ANALIZZATORE LESSICALE --> sequenza di token --> ANALIZZATORE SINTATTICO --> albero sintattico --> GENERATORE DI CODICE INTERMEDIO --> rappresentazione intermedia
+sequenza di caratteri --> ANALIZZATORE LESSICALE --> sequenza di token --> ANALIZZATORE SINTATTICO --> albero sintattico --> GENERATORE DI CODICE INTERMEDIO --> rappresentazione intermedia | --> GENERATORE DI CODICE --> codice macchina --> OTTIMIZZATORE DIPENDENTE DALLA TECNOLOGIA --> codice macchina
 
 ANALIZZATORE LESSICALE (LEXER): raggruppa sequenze di caratteri in oggetti (TOKEN)
 ANALIZZATORE SINTATTICO (PARSER): start run, prende una sequenza di token e indica se essi formano una struttura linguistica legale del linguaggio (correttezza sintattica)
@@ -40,9 +66,16 @@ ANALIZZATORE SEMANTICO: analisi dei tipi, controlla la corrispondenza del numero
 GENERATORE DI CODICE INTERMEDIO: produce un codice lineare
 TABELLA DEI SIMBOLI: struttura dati (dizionario) che memorizza i simboli incontrati nell'analisi del sorgente
 
-Type Checking: controllo dei tipi (statico --> controllo a tempo di compilazione e dinamico --> controllo a tempo di esecuzione)
-Scoping rules: regole che descrivono la visibilità delle variabili all'interno del programma sorgente
+Type Checking: controllo dei tipi (statico --> controllo a tempo di compilazione | dinamico --> controllo a tempo di esecuzione)
+Scoping rules: regole che descrivono la visibilità (o scope) delle variabili all'interno del programma sorgente
 Ambiente: mapping fra nomi e locazioni di memoria
 Memoria: mapping fra locazioni di memoria e valori
 Linguaggio funzionale: mapping diretto tra nome e valore, il programmatore ha visibilità del solo ambiente
-l-value: deve avere una locazione ben precisa in memoria (tipo un identificatore, un'espressione non è un l-value o r-value)
+l-value (left value): entità che ha una posizione in memoria e quindi può essere assegnato o modificato
+    - ha un indirizzo in memoria
+    - può essere usato per ricevere un valore
+r-value (right value): rappresenta un qualsiasi valore o contenuto temporaneo che può essere assegnato (ma non modificato) a un l-value
+    - non ha un indirizzo in memoria associato 
+    - non può essere assegnato o modificato direttamente
+
+26/09/24

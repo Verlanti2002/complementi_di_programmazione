@@ -73,6 +73,12 @@ Python è un linguaggio di programmazione dinamico ad alto livello, completament
     - NB: PYTHON E' UN LINGUAGGIO COMPILATO E INTERPRETATO
     - Ogni variabile (cha ha un tipo) è un oggetto
 
+Quando esegui uno script Python, l'interprete Python prima compila il codice sorgente in un formato intermedio chiamato bytecode
+Questo bytecode è memorizzato in file con estensione .pyc (che sta per "Python Compiled")
+    - Il bytecode è un linguaggio intermedio
+    - La compilazione in bytecode avviene automaticamente, e spesso l'utente non se ne accorge
+Il bytecode compilato viene quindi eseguito da un interprete, tipicamente la Python Virtual Machine (PVM)
+
 Esempio:
 
 function calcola(a,b,c) => return (a+b)*c
