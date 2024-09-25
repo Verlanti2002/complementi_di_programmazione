@@ -116,8 +116,8 @@ FTP  HTTP           IRC  RTP    (Livello 5-6-7)
 RTP (Real Time Protocol)
 IRC: vecchio protocollo di messaggistica
 
-Switch e bridge sono nodi intermedi di livello 2 - H2N --> mettono in comunicazione host della stessa rete
-Router: identifica un nodo intermedio di livello 3 (legge fino all'header IP) --> mette in comunicazione reti diverse
+Switch e bridge sono nodi intermedi di livello 2 - H2N
+Router: identifica un nodo intermedio di livello 3 (legge fino all'header IP) 
 Switch lv3: switch di livello 2 con eccezioni aggiuntive da leggere un indirizzo ip
 Router con funzionalità di natting: router di livello 3 ma con eccezioni aggiuntive per interpretare informazioni di livello 4
 
@@ -133,7 +133,7 @@ TDM (Time Division Multiplexing): uso alternato di tutta la banda in modo stabil
 
 Modalità per trasferire i dati
 - Circuit Switching (Commutazione a circuito)
-    Circuito statico (non cambia durante la tramissione dei dati) virtuale dedicato per ogni comunicazione
+    Circuito statico (non cambia durante la trasmissione dei dati) virtuale dedicato per ogni comunicazione
 - Packet Switching (Commutazione a pacchetto)
     I dati sono suddivisi in "parti" ed inviati attraverso la rete (orientati al pacchetto)
     Ammette collisioni (interferenze) dovute a condivisione di risorse --> quando due host trasmettono contemporaneamente sullo stesso canale 
