@@ -173,4 +173,5 @@ WAN wireless(Wide Area Network)
 - 4G
 - 5G
 
+PREMESSA PER I PROTOCOLLI H2N
 Se ho dei collegamenti fisici con una probabilità alta di corruzione (perdita di pacchetto) allora è meglio implementare un protocollo host to network che garantisca l'affidabilità già a livello H2N (ritrasmissione) senza dire che poi se ne occuperà il livello 4 (TCP)
