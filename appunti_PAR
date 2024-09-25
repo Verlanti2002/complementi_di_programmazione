@@ -74,4 +74,103 @@ Ogni pacchetto è costituito da:
 PCI + SDU = PDU (Protocol Data Unit)
 Messaggio: SDU (payload) + PCI (header)
 
-Payload = (payload + header) del livello precedente
+Payload = (payload + header) del livello precedente --> meccanismo di incapsulamento
+
+25/09/24
+
+Nelle comunicazioni informatiche si inviano pacchetti
+
+Standard de iure: creazione di uno standard per legge
+Standard de facto: uso comune di un determinato standard non ancora soggetto a norma tecnica
+
+ISO/OSI (de iure): un consorzio ha definito questo standard su carta (International Standard Organization)
+TCP/IP (da facto): nato in contesti universitari 
+
+I 7 liveli dello stack ISO/OSI
+Application: protocollo applicativo che si vuole utilizzare
+Presentation: si occupano di manipolare la rappresentazione delle informazioni in modo da presentarle nel miglior modo possibile (es. responsive)
+Session: protocollo che crea uno stato (sessione) tra le applicazioni che eseguono tale protocollo
+Transport: protocollo che gestisce la comunicazione tra applicazioni (TCP/UDP)
+Network: si occupa di mettere in comunicazione tante reti (IP Address)
+Data link: si occupa delle comunicazioni a livello logico locali --> indirizzamento (MAC Address)
+Physical: livello che gestisce la trasmissione dell'informazione attraverso un mezzo fisico (cavo, aria, ...)
+
+I 4 livelli dello stack TCP/IP --> stack affermatosi e che studieremo (per il numero del livello si fa riferimento allo stack ISO/OSI)
+Application: accorpamento del livello di sessione, presentazione e applicazione (gestiti complessivamente dall'applicazione)
+Transport: supporta i trasferimenti da host a host: TCP, UDP
+Internet: ipv4-ipv6
+Host-to-network: accorpamento del livello fisico e data link --> definisco sia come trasmettere l'informazione a livello fisico che come struttare le informazioni a livello logico (Bluetooth, Wi-Fi)
+
+ISO/OSI
+    - cattiva tempistica
+    - cattiva tecnologia
+
+FTP  HTTP           IRC  RTP    (Livello 5-6-7)
+    |                   |
+   TCP                 UDP  (Livello 4)
+        |           |
+             IP (Livello 3)
+        |     |     |
+       H2N   H2N   H2N (Livello 1-2)
+
+RTP (Real Time Protocol)
+IRC: vecchio protocollo di messaggistica
+
+Switch e bridge sono nodi intermedi di livello 2 - H2N --> mettono in comunicazione host della stessa rete
+Router: identifica un nodo intermedio di livello 3 (legge fino all'header IP) --> mette in comunicazione reti diverse
+Switch lv3: switch di livello 2 con eccezioni aggiuntive da leggere un indirizzo ip
+Router con funzionalità di natting: router di livello 3 ma con eccezioni aggiuntive per interpretare informazioni di livello 4
+
+Indirizzo ip: sistema di identificazione degli host a livello 3
+
+Multiplexing (condivisione): quando tante entità vogliono comunicare con lo stesso canale condiviso (o astratto) utilizzano un meccanismo di multiplexing affinchè le informazioni vengano mixate e inviate sullo stesso mezzo
+Demultiplexing: processo che permette di ridividere le informazioni precedentemente mixate
+
+Metodi basati sulla frequenza (FDM)
+Metodi basati sul tempo (TDM)
+FDM (Frequency Division Multiplexing): apertura parallela di diversi canali dividendo la banda disponibile
+TDM (Time Division Multiplexing): uso alternato di tutta la banda in modo stabilito a priori
+
+Modalità per trasferire i dati
+- Circuit Switching (Commutazione a circuito)
+    Circuito statico (non cambia durante la tramissione dei dati) virtuale dedicato per ogni comunicazione
+- Packet Switching (Commutazione a pacchetto)
+    I dati sono suddivisi in "parti" ed inviati attraverso la rete (orientati al pacchetto)
+    Ammette collisioni (interferenze) dovute a condivisione di risorse --> quando due host trasmettono contemporaneamente sullo stesso canale 
+        - (Locali) Collisioni nelle reti locali con mezzi fisici condivisi
+        - (Reti) Congestione nei buffer di memoria (memorizzano le code dei pacchetti) dei router --> errori o perdite di pacchetti
+
+Metrica di prestazione
+Bandwidth (banda di trasmissione): quantità di dati trasmessi per unità di tempo
+- Unità di tempo: secondo
+- Quantità di dati trasmessi: multipli di bit
+    Kbps o Kbit/s --> Kilo-bit per secondo
+    Mbps o Mbit/s --> Mega-bit per secondo
+    Gbps o Gbit/s  --> Giga-bit per secondo
+
+Livello H2N
+- interconnessione tra due o più host
+- trasmissione dati tra host direttamente connessi
+
+Esempi:
+LAN Wired
+- Ethernet (standard de facto)
+- Token-ring
+- FDDI
+- Frame relay
+
+LAN Wireless
+- 820.11x
+
+PAN (Personal Area Network)
+- Bluetooth
+- ZigBee
+
+WAN wireless(Wide Area Network)
+- GSM
+- UMTS
+- LTE
+- 4G
+- 5G
+
+Se ho dei collegamenti fisici con una probabilità alta di corruzione (perdita di pacchetto) allora è meglio implementare un protocollo host to network che garantisca l'affidabilità già a livello H2N (ritrasmissione) senza dire che poi se ne occuperà il livello 4 (TCP)
