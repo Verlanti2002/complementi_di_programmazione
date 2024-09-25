@@ -1,11 +1,11 @@
 24/09/24
 
-Compilatore: componente di una cosidetta "toolchain" di programmi il cui obiettivo è creare eseguibili a partire dal programmi
+Compilatore: componente di una cosidetta "toolchain" di programmi il cui obiettivo è creare eseguibili a partire da programmi sorgenti
 
 Altri componenti della "toolchain":
-    - precompilatore: inclusione di file, definizione/espansione di macro e compilazione condizionale
+    - precompilatore: inclusione di file (#include), definizione/espansione di macro (#define) e compilazione condizionale (#ifdef, #if, #ifndef)
     - assemblatore: genera il codice oggetto 
-    - linker (statico e dinamico): collega le librerie statiche e crea l'eseguibile finale
+    - linker (statico o dinamico): collega le librerie statiche e crea l'eseguibile finale
 
 sorgente (hw.cpp) --> PREPROCESSORE --> pre elaborato o translation unit (hw.ii) --> COMPILATORE (cc1plus) --> assembly (hw.s) --> ASSEMBLER (as) --> codice oggetto (hw.o) --> LINKER (ld) --> eseguibile (hw) --> processo in esecuzione (input: librerie dinamiche) --> output
 
@@ -30,14 +30,14 @@ Compilatore vs Interprete
 
 Compilatore
 Nei linguaggi compilati, il codice sorgente viene tradotto interamente in codice macchina da un programma chiamato compilatore prima dell'esecuzione
-sorgente --> compilatore --> eseguibile --> macchina fisica (interpreta il binario) --> output
+sorgente --> compilatore --> eseguibile (in linguaggio macchina) --> macchina fisica (interpreta il binario) --> output
     - Compilazione anticipata: prima compilazione poi esecuzione
     - Velocità di esecuzione: l'esecuzione è più veloce in quanto il codice è già tradotto in istruzioni macchina
     - Verifica di errori: la maggior parte degli errori (sintattici o semantici) viene rilevata durante la compilazione
     - Portabilità limitata: il codice compilato è strettamente legato all'architettura della macchina su cui è stato compilato 
 
 Interprete
-Nei linguaggi interpretati, il codice sorgente viene tradotto ed eseguito riga per riga da un programma chiamato interprete.
+Nei linguaggi interpretati, il codice sorgente viene tradotto ed eseguito riga per riga da un programma chiamato interprete
 L'interprete legge il codice sorgente e lo esegue direttamente, senza produrre un file eseguibile seperato
 sorgente --> interprete --> output
     - Velocità di esecuzione: più lento nell'esecuzione, poichè l'interprete deve tradurre ogni istruzione mentre viene eseguita (inefficiente, spende molto tempo nell'analisi dell'input)
@@ -64,13 +64,43 @@ ANALIZZATORE LESSICALE (LEXER): raggruppa sequenze di caratteri in oggetti (TOKE
 ANALIZZATORE SINTATTICO (PARSER): start run, prende una sequenza di token e indica se essi formano una struttura linguistica legale del linguaggio (correttezza sintattica)
 ANALIZZATORE SEMANTICO: analisi dei tipi, controlla la corrispondenza del numero di parametri di una procedura
 GENERATORE DI CODICE INTERMEDIO: produce un codice lineare
-TABELLA DEI SIMBOLI: struttura dati (dizionario) che memorizza i simboli incontrati nell'analisi del sorgente
+TABELLA DEI SIMBOLI: struttura dati (dizionario: mapping chiave-valore) che memorizza i simboli incontrati nell'analisi del sorgente
+
+Esempio pratico:
+position = initial + rate * 60
+
+Analizzatore lessicale:
+⟨id, 1⟩ (=) ⟨id, 2⟩ (+) ⟨id, 3⟩ (*) (60)
+
+Analizzatore sintattico:
+⟨id, 1⟩ = ⟨id, 2⟩ + ⟨id, 3⟩ * 60
+
+Analizzatore semantico:
+⟨id, 1⟩ = ⟨id, 2⟩ + ⟨id, 3⟩ * inttofloat(60)
+
+Generatore di codice intermedio:
+t1 = inttofloat(60)
+t2 = id3 * t1
+t3 = id2 + t2
+id1 = t3
+
+Ottimizzatore di codice:
+t1 = id3 * 60.0
+id1 = id2 + t1
+
+Generatore di codice:
+LDF R2, id3
+MULF R2, R2, #60.0
+LDF R1, id2
+ADDF R1, R1, R2
+STF id1, R1
+
 
 Type Checking: controllo dei tipi (statico --> controllo a tempo di compilazione | dinamico --> controllo a tempo di esecuzione)
-Scoping rules: regole che descrivono la visibilità (o scope) delle variabili all'interno del programma sorgente
+Scoping rules: regole che descrivono la visibilità (o scope) delle variabili all'interno del programma
 Ambiente: mapping fra nomi e locazioni di memoria
 Memoria: mapping fra locazioni di memoria e valori
-Linguaggio funzionale: mapping diretto tra nome e valore, il programmatore ha visibilità del solo ambiente
+Linguaggio funzionale: caratterizzato da un mapping diretto tra nome e valore, il programmatore ha visibilità del solo ambiente
 l-value (left value): entità che ha una posizione in memoria e quindi può essere assegnato o modificato
     - ha un indirizzo in memoria
     - può essere usato per ricevere un valore
