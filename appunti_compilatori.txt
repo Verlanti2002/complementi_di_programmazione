@@ -95,7 +95,6 @@ LDF R1, id2
 ADDF R1, R1, R2
 STF id1, R1
 
-
 Type Checking: controllo dei tipi (statico --> controllo a tempo di compilazione | dinamico --> controllo a tempo di esecuzione)
 Scoping rules: regole che descrivono la visibilità (o scope) delle variabili all'interno del programma
 Ambiente: mapping fra nomi e locazioni di memoria
@@ -109,3 +108,109 @@ r-value (right value): rappresenta un qualsiasi valore o contenuto temporaneo ch
     - non può essere assegnato o modificato direttamente
 
 26/09/24
+
+Linguaggi formali: linguaggi definiti mediante un qualche apparato formale di natura matematica
+    - è possibile stabilire se una "frase" è corretta (sintassi)
+    - è possibile attribuire un ben preciso significato, senza ambiguità (semantica)
+
+Linguaggi formali in informatica
+- Linguaggi di programmazione: C/C++, Java, Python, ...
+- Linguaggi di marcatura: HTML. XML, LaTeX
+- Linguaggi di interrogazione: SQL, SPARQL, GraphLog
+- Linguaggi di configurazione: sendmail, apache, iptables
+
+Alfabeto: insieme finito di simboli (detti anche caratteri)
+    - Σ per indicare un generico alfabeto
+    - (a, b e c) per indicare un generico carattere utilizziamo le lettere iniziali dell'alfabeto latino
+
+Stringhe: sequenza di caratteri ∈ Σ
+    - per indicare una stringa generica utilizziamo le ultime lettere dell'alfabeto latino (w, x, y, z)
+    - per indicare una stringa generica utilizziamo le prime lettere dell'alfabeto greco (α, β, γ)
+    - per indicare una stringa speciale (formata da zero caratteri) o vuota usiamo ϵ
+    - per evitare ambiguità racchiuderemo le stringhe fra coppie di apici (o doppi apici)
+
+Operazioni sulle stringhe
+- Concatenazione: unione di due stringhe, una di seguito all'altra
+    x = Linguaggi y = formali --> xy = Linguaggiformali
+    - associativa ( (A*B)*C = A*(B*C) ), ma non commutativa (A*B != B*A)
+    - la stringa vuota ϵ è l'elemento neutro della concatenazione
+- |x| lunghezza della stringa x
+- xi carattere in posizione i, i = 0, . . . , |x| − 1
+- Una sottostringa di x é una stringa formata dai caratteri xi, xi+1, . . . , xj, per opportuni valori di i e j, 0 ≤ i ≤ j < n
+- x^R indica la stringa ottenuta rovesciando i caratteri di x
+    x = Roma --> x^R = amoR
+
+Linguaggi
+Un linguaggio su un dato alfabeto Σ è un insieme di stringhe di caratteri (o simboli) ∈ Σ
+- Esempio di linguaggio con un numero di stringhe finito
+    L2 = {00,01,10,11} --> definito su B e formato da 4 stringhe
+
+Operazioni con i linguaggi
+- operazioni insiemistiche (unione, intersezione, differenza, ...)
+- concatenazione
+    M e N linguaggi dello stesso alfabeto Σ
+    L = MN = {z ∈ Σ* : ∃ x ∈ M, ∃ y ∈ N | z = xy}
+    elemento neutro: stringa vuota {ϵ}
+- potenza n-esima
+    L^0 = {ϵ}
+    L^n = L^n−1 * L, n > 0
+- chiusura (riflessiva)
+    L* = ∪ (n=0 to ∞) L^n = L^0 ∪ L^1 ∪ L^2 ∪ ...
+    Esempio:
+        B* = ∪ (n=0 to ∞) {0,1}^n
+        = {0, 1}^0 ∪ {0, 1}^1 ∪ {0, 1}^2 ∪ . . .
+        = {ϵ} ∪ {0, 1} ∪ {00, 01, 10, 11} . . .
+        B*: insieme di tutte le stringhe binarie
+    Σ*: insieme di tutte le stringhe su un alfabeto Σ
+- chiusura (non riflessiva): L^+ = LL*
+    L^+ = ∪ (n=1 to ∞) L^n = L^1 ∪ L^2 ∪ ...
+- riflessione di linguaggio L su alfabeto Σ
+    L^R = {x ∈ Σ* : ∃y ∈ L | x = y^R}
+- |L| numero stringhe di un linguaggio finito
+    |L| = N se L è infinito
+
+Specifica di linguaggi
+Se il linguaggio è infinito è comunque possibile descriverlo con quantità finita di informazione
+Esempio:
+    L0 = {x ∈ B* | x = y0, y ∈ B*}
+
+Specifica riconoscitiva
+Si tratta di definire il linguaggio tramite un algoritmo decisionale, ossia il cui output è binario: yes/no True/False, 0/1, ...
+Dato A un algoritmo di decisione, Σ alfabeto generico: 
+La = {x ∈ Σ* | A(x) = True}
+Il linguaggio C++ è l'insieme delle stringhe sull'alfabeto ASCII (programmi) per cui il compilatore C++ (l'algoritmo) non produce errore
+
+Specifica generativa
+Si danno delle "regole" con cui è possibile generare tutte e sole le stringhe del linguaggio che si vuole specificare
+I formalismi più importanti sono: --> strumenti fondamentali per definire il comportamento di lexer e parser
+    - espressioni regolari
+    - grammatica context-free
+
+Linguaggi regolari
+Un linguaggio L su alfabeto Σ = {a1, ..., an} si dice regolare se può essere espresso usando un numero finito di operazioni di 
+concatenazione, unione e chiusura riflessiva a partire dai suoi linguaggi unitari {a1}, ..., {an}
+    - {ϵ}, {a1}, . . . , {an} sono linguaggi regolari
+    - se R1 ed R2 sono linguaggi regolari, allora R1 ∪ R2 e R1R2 sono linguaggi regolari
+    - se R è un linguaggio regolare allora R* è un linguaggio regolare 
+
+Linguaggio unitario: linguaggio costituito da un singolo carattere di Σ
+Esempio:
+    - {C++} è concatenazione dei linguaggi unitari {C}, {+}, {+}
+    - {Python} è concatenazione dei linguaggi unitari {P}, {y}, {t}, {h}, {o}, {n}
+    - {x,y,z} è regolare perchè esprimibile come unione dei linguaggi regolari {x}, {y} e {z}
+    - {C++,Python} è regolare perchè unione di due linguaggi regolari
+Ogni linguaggio finito è esprimibile come unione di concatenazioni di linguaggi unitari
+
+Espressioni regolari
+Dato un alfabeto Σ sono un formalismo (cioè a loro volta sono linguaggi) per definire linguaggi regolari
+Le epressioni regolari pure (e.r) riflettono le costruzioni dei linguaggi regolari 
+    Base
+        - ϵ è un'espressione regolare che denota il linguaggio composto dalla sola stringa vuota ϵ
+        - per ogni a ∈ Σ, a è un'e.r. che denota il linguaggio unitario {a}
+    Ricorsione Se E ed F sono e.r. che denotano, rispettivamente, i linguaggi E ed F, allora la scrittura:
+        - EF è un'e.r. che denota il linguaggio EF (concatenazione)
+        - E|F (o anche E + F) è un'e.r. che denota il linguaggio E ∪ F (unione)
+        - E* è un'e.r. che denota il linguaggio E* (chiusura riflessiva)
+    Parentesi  Se E è un'e.r., la scrittura (E) è un'e.r. equivalente alla prima, cioè che denota lo stesso insieme di stringhe
+
+01/10/24
