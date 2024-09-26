@@ -92,3 +92,342 @@ e2 → [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6]
 e3 → "mele e arance mele e arance mele e arance"
 
 26/09/24
+
+python3 -c 'statement' --> permette di lanciare un comando da linea di comando
+    python3 -c 'print("ciao " * 2)'
+
+Python
+- Linguaggio ad ALTO LIVELLO
+- Linguaggio DINAMICO
+- Linguaggio interpretato
+    - Modello a compilatore + interprete
+    - Modello a Bytecode
+    - Portabile
+    - Macchina Virtuale Python (PVM)
+
+Tutti i tipi sono classi
+Tipi Built in
+    - Numerics: valori numerici (int, float, complex)
+    - Sequence: sequenze di oggetti (str, list, tuple)
+    - Set: insiemi (set, frozenset)
+    - Dict: dizionari di coppie key->value
+
+Numerics
+    - Numeri interi
+        lunghezza arbitraria (no limiti)
+    - Numeri float
+        precisione dipende dall'architettura
+        separatore parte intera/decimale "."
+    - Numeri complessi
+        [Numero reale +] numero reale con suffisso j
+        z = 10 + 20j; z = -4j
+        z.real: parte reale
+        z.imag: parte immaginaria
+    - Booleani
+        considerati sottotipo degli interi
+
+Numerics - operazioni possibili
+- Operazioni aritmetiche standard: +, -, *, /
+- Divisione: /
+- Divisione intera: //
+- Resto divisione tra interi: %
+- Valore assoluto: abs()
+- Numero complesso coniugato: conjugate()
+- Elevamento a potenza: pow(), **
+- Arrotondamento: math.trunc(), math.floor(), math.ceil(), round()
+
+Tipi sequenze e stringhe
+- Stringhe
+    racchiuse tra apici '' o ""
+    possibilità di usare i caratteri speciali es. \n \t \\
+- Liste
+    elementi di qualsiasi tipo (anche non coerenti) racchiusi tra []
+- Tuple
+    elementi di qualsiasi tipo (anche non coerenti) racchiusi tra ()
+    immutabili (a differenza delle liste)
+
+Tipi sequenze e stringhe - Operazioni
+- Accesso
+    accesso ad un elemento -> a[1]
+    accesso a sottoliste/sottostringhe -> a[1:3]
+    accesso partendo dal fondo -> a[-1]
+- Concatenazione
+    'a' + 'b' = 'ab'
+    [1,2] + [3,4] = [1,2,3,4]
+- Ripetizione
+    'a' * 4 = 'aaaa'
+    [1] * 4 = [1,1,1,1]
+- Lunghezza della sequenza/lista 
+    len(a) = 4
+
+Tipi stringhe - Operazioni
+- s.lower(), s.upper(): ritornano una copia della stringa s con lettere minuscole, maiuscole
+- s.count(substr): ritorna il numero di occorrenze della sottostringa substr in s
+- s.find(substr): ritorna l'indice della prima occorrenza della sottostringa substr in s
+- s.replace(sub1,sub2): rimpiazza le occorrenze della sottostringa sub1 con sub2 in s -→ ritorna la stringa modificata. La stringa di partenza rimane inalterata
+IN PYTHON LE STRINGHE SONO IMMUTABILI
+- Join: concatena diversi elementi aggiungendo un separatore
+    ';'.join([1,2,3]) = "1;2;3"
+- Split: divide una stringa in elementi considerando un separatore
+    '1+2+3+4+5'.split('+') = ['1', '2', '3', '4', '5']
+
+Tipi liste - Operazioni
+- lista.append(oggetto): appende l'oggetto in fondo alla lista
+- lista.insert(indice, oggetto): inserisce l'oggetto nella posizione indicata dall'indice
+- lista.pop(indice): estrae l'oggetto in posizione indice dalla lista
+- lista.pop(): estrae l'ultimo elemento della lista
+- lista.sort(): ordina gli oggetti contenuti - modifica lista in-place!
+- sorted(lista): non modifica la lista originale
+- len(lista): ritorna il numero di elementi contenuti in una lista
+- Operatore in: ricerca elemento in una lista
+    6 in lista -→ True
+
+Tipi liste - Operazioni Rimozione
+- lista.pop(ind1): rimuove l'elemento di indice ind1 e lo ritorna
+- lista.remove(elem1): rimuove l'elemento elem1 (matching) senza ritornarlo
+- del lista[ind1]: statement che rimuove l'elemento di indice ind1 – opera anche sui range!
+
+Tipi liste - Operazioni Slicing
+wt = [1,2,3,4,5]
+- Base: 
+    wt_slice = wt[1:3] --> [2,3]
+    notazione [start:stop]
+- Con incremento
+    wt_slice = wt[1:5:2] --> [2,4]
+
+Tipi liste - Copie
+Se si usa = si copia il riferimento
+    a = [1,2,3]; b = a; b[0] = 2; -> b è [2,2,3] a è [2,2,3]
+E' STATA MODIFICATA ANCHE A!
+
+Per copiare bisogna usare lo slicing
+    a = [1,2,3]; b = a[:]; b[0] = 2; -> b è [2,2,3] a è [1,2,3]
+B ORA E' UNA LISTA DIVERSA E OPERARE SU DI ESSA NON MODIFICA A!
+
+Tipi Tuple
+Le tuple sono immutabili (come le stringhe)
+Si possono usare tutti gli operatori delle liste tranne quelli di modifica!
+    tup1 = ('one', 'two', 12, 25)
+
+Tipi Set
+Il set, in Python, è un insieme non ordinato di oggetti non replicati:
+- Non ordinato -> Non posso accedere tramite indice
+- Non replicati -> Lo stesso oggetto sarà presente al massimo una volta
+Creato con la funzione set() o {elem, elem}.
+a = set() # insieme vuoto
+b = set([1,2,3,4]) #insieme creato da una lista
+c = {1,2} #insieme con al suo interno gli interi 1 e 2
+
+Tipi Set - Operazioni
+- Cardinalità del set S: len(S)
+- Appartenenza all'insieme: x in S, x not in S
+- Disgiunzione: S1.isdisjoint(S2)
+- Unione: S1.union(S2) (simbolo |)
+- Intersezione: S1.intersection(S2) (simbolo &)
+- Differenza: S1.difference(S2) (simbolo -)
+
+Tipi Dictionary
+Il Dictionary, in Python, è un associazione chiave-valore di più elementi:
+- simili alle HashMap in Java
+Creato con {} o dict()
+a = {} # dictionary vuoto
+a = dict() # dictionary vuoto
+b = {'chiave': valore, 'chiave2': valore2} # dizionario con due coppie chiave-valore
+b = {1: 'Rosso', 2: 'Giallo', 3: 'Verde'} # esempio
+
+Il Dictionary, in Python, è un associazione chiave-valore di più elementi:
+- Valori: possono essere qualsiasi oggetto
+    interi
+    stringhe
+    ecc…
+- Chiavi: SOLO OGGETTI IMMUTABILI
+    Numerics
+    Stringhe
+    Tuple
+- LE CHIAVI SONO UNICHE NEL DIZIONARIO
+
+Accesso ai valori:
+- Si accede usando la chiave con la notazione [chiave]
+a = {'uno': 1, 'due': 2}
+a['uno'] -> 1
+- Si possono anche modificare/aggiungere gli elementi in questo modo
+a['uno'] = 'one' -> {'uno': 'one', 'due': 2}
+a['tre'] = 3 -> {'uno': 'one', 'due': 2, 'tre': 3}
+
+Tipi Dictionary - Operazioni
+Metodi:
+- .keys(): restituisce una lista con tutte le chiavi contenute nel dictionary
+- .values(): restituisce una lista con tutti i valori contenuti nel dictionary
+- .items(): restituisce una lista di tuple (chiave, valore)
+
+Eliminare una chiave (e il valore):
+- del a[chiave] : elimina la chiave e il valore dal dizionario
+- .pop(chiave): elimina e restituisce il valore --> alternativa al comando sopra
+
+Controllo presenza chiave:
+- operatore in: 'uno' in a -> True se la chiave 'uno' è presente in a
+- .has_key(chiave): True se la chiave è presente nel dizionario --> alternativa al comando sopra
+
+Blocco di codice
+In Python un blocco di codice è caratterizzato da:
+    - inizia con : (seguito dal ritorno a capo)
+    - è indentato dall'inizio alla fine
+        la fine dell'indentazione indica la fine del blocco
+
+Esempio:
+while b < 0:
+    b = b + 1
+    b = b + 2
+b = 0
+
+Statement ;
+In Python non si usa ; per indicare la fine di un'istruzione
+La fine di un'istruzione viene identificata dal ritorno a capo
+    b = 0
+    b = b + 1
+Si può usare per mettere più istruzioni sulla stessa riga
+    b=0; b=b+1
+
+Statement ,
+In Python è possibile utilizzare , per assegnamenti multipli
+    b, a = 1, 2
+a -> 2
+b -> 1
+
+Moduli e import
+In Python è possibile importare moduli esterni (librerie) per poterle utilizzare all'interno del proprio codice
+    import pandas
+    a = pandas.DataFrame()
+
+    import pandas as pd --> è possibile rinominare il modulo
+    a = pd.DataFrame()
+
+    from pandas import DataFrame --> è possibile importare solo la funzione specifica senza inserire il riferimento al modulo
+    a = DataFrame()
+
+    from pandas import * --> importa tutte le funzioni del modulo senza inserire il riferimento al modulo
+    a = DataFrame 
+
+Commenti
+In Python si commenta riga per riga utilizzando il #
+Non vi è il commento per blocchi
+
+Costrutti base
+
+- Costrutti condizionali
+    if condizione1:
+        codice
+    elif condizione2:
+        codice
+    else:
+        codice
+
+- Ciclo while
+    while b < 10:
+        b = b + 1
+
+    while b < 10:
+        b = b + 1
+    else: --> quando esce viene eseguito l'else
+        b = 100
+
+- Ciclo for
+    for a in elenco:
+        print(a)
+
+    for a in elenco:
+        print(a)
+    else: --> quando esce viene eseguito l'else
+        print('vuoto')
+
+Comandi di salto
+- Comando break:
+    Interrompe un ciclo for/while
+- Comando continue:
+    Salta all'iterazione for/while successiva
+- Clausola else:
+    Può essere inserita alla fine di un blocco relativo ad un ciclo
+    Viene eseguita (una volta sola) se un ciclo termina le sue iterazioni o quando la condizione del ciclo è valutata False
+    Non viene eseguita in caso di break
+
+Comportamenti ciclo for
+Il ciclo for può iterare su qualsiasi elenco di oggetti: stringhe, tuple, liste ecc..
+Tipico uso (come in altri linguaggi) iterare su interi ordinati (for i=0; i<10; i++)
+    Si usa la funzione range()
+        for i in range(10):
+            print(i)
+
+range(inizio, fine, intervallo)
+    range(0,10,2) --> 0,2,4,6,8
+range(inizio, fine)
+    range(0,5) --> 0,1,2,3,4
+range(fine)
+    range(5) --> 0,1,2,3,4
+
+- Ciclo for su liste
+    a = ['a', 'b']
+    for i in a
+        print(i)
+Risultato:
+a
+b
+
+- Ciclo for su stringhe
+    a = "cd"
+    for i in a:
+        print(i)
+Risultato:
+c
+d
+
+- Ciclo for su tuple
+    a = ('a', 'b')
+    for i in a:
+        print(i)
+Risultato:
+a
+b
+
+- Ciclo for su set: ad ogni iterazione vi è il riferimento ad un elemento dell'insieme
+    a = set(['a', 'b'])
+    for i in a:
+        print(i)
+Risultato: --> non è garantito l'ordine
+b
+a
+
+- Ciclo for su dictionary: ad ogni iterazione vi è il riferimento ad una chiave dell’insieme
+    a = {'k1':1, 'k2':2}
+    for i in a:
+        print(i)
+Risultato: --> non è garantito l'ordine
+k1
+k2
+
+- Ciclo for con funzione enumerate()
+La funzione enumerate enumera la sequenza su cui si itera
+Ritorna una tupla (indice, oggetto)
+    a = 'abc'
+    for i in enumerate(a):
+        print(i)
+    for i,o in enumerate(a):
+        print(i)
+Risultato 1:
+(0,'a')
+(1,'b')
+(2,'c')
+Risultato 2:
+0
+1
+2
+
+Formattare le stringhe
+    var = 10
+    str_dinamica = f'la variabile ha valore: {var}'
+    str_dinamica --> la variabile ha valore: 10
+
+Leggere da stdin
+    res = input('inserisci qualcosa: ')
+    terminale mostra -> inserisci qualcosa:
+    utente inserisce 'ciao'
+    res = 'ciao'
