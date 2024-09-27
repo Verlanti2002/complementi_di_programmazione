@@ -36,7 +36,7 @@ Vantaggi
 
 Svantaggi:
 - Prestazioni inferiori: la verifica dei tipi e l'allocazione della memoria possono comportare un overhead significativo durante l'esecuzione del programma
-- Errori a runtime: gli errori di tipo possono emergere solo durante l'esecuzione del programma, il che può essere problematico
+- Errori a runtime: gli errori di tipo possono emergere solo durante l'esecuzione del programma, il che può essere problematico per alcune applicazioni
 - Difficoltà nella manutenzione del codice: la tipizzazione dinamica rende la manutenzione del codice più complessa 
 - Maggiore probabilità di bug: maggiore probabilità di errore a causa della mancanza di verifica statica dei tipi
 
@@ -65,7 +65,7 @@ Tipizzazione safe
 Un linguaggio di programmazione è considerato adottare una "tipizzazione safe" dei dati se impedisce che un'operazione di casting implicito causi un crash
 
 Tipizzazione unsafe
-Un linguaggio di programmazione è considerato adottare una tipizzazione unsafe dei dati se non impedisce che un'operazione di casting implicito causi un crash
+Un linguaggio di programmazione è considerato adottare una "tipizzazione unsafe" dei dati se non impedisce che un'operazione di casting implicito causi un crash
 
 PYTHON
 
@@ -79,17 +79,17 @@ Questo bytecode è memorizzato in file con estensione .pyc (che sta per "Python 
     - La compilazione in bytecode avviene automaticamente, e spesso l'utente non se ne accorge
 Il bytecode compilato viene quindi eseguito da un interprete, tipicamente la Python Virtual Machine (PVM)
 
-Esempio:
+Script di codice Python:
 
 function calcola(a,b,c) => return (a+b)*c
 
 e1 = calcola(1,2,3)
 e2 = calcola([1,2,3],[4,5,6],2)
-e3 = calcola(‘mele ’, ‘e arance’, 3)
+e3 = calcola('mele ', 'e arance', 3)
 
 e1 → 9
 e2 → [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6]
-e3 → "mele e arance mele e arance mele e arance"
+e3 → 'mele e arance mele e arance mele e arance'
 
 26/09/24
 
@@ -97,8 +97,8 @@ python3 -c 'statement' --> permette di lanciare un comando da linea di comando
     python3 -c 'print("ciao " * 2)'
 
 Python
-- Linguaggio ad ALTO LIVELLO
-- Linguaggio DINAMICO
+- Linguaggio ad ALTO LIVELLO --> più vicino all'utente (comprensione più immediata)
+- Linguaggio DINAMICO --> tipi delle variabili verificati sa tempo di esecuzione
 - Linguaggio interpretato
     - Modello a compilatore + interprete
     - Modello a Bytecode
@@ -110,13 +110,13 @@ Tipi Built in
     - Numerics: valori numerici (int, float, complex)
     - Sequence: sequenze di oggetti (str, list, tuple)
     - Set: insiemi (set, frozenset)
-    - Dict: dizionari di coppie key->value
+    - Dict: dizionari di coppie key:value
 
 Numerics
     - Numeri interi
         lunghezza arbitraria (no limiti)
     - Numeri float
-        precisione dipende dall'architettura
+        precisione dipendente dall'architettura
         separatore parte intera/decimale "."
     - Numeri complessi
         [Numero reale +] numero reale con suffisso j
@@ -148,7 +148,7 @@ Tipi sequenze e stringhe
 
 Tipi sequenze e stringhe - Operazioni
 - Accesso
-    accesso ad un elemento -> a[1]
+    accesso ad un elemento (per indice) -> a[1]
     accesso a sottoliste/sottostringhe -> a[1:3]
     accesso partendo dal fondo -> a[-1]
 - Concatenazione
@@ -215,8 +215,8 @@ Il set, in Python, è un insieme non ordinato di oggetti non replicati:
 - Non replicati -> Lo stesso oggetto sarà presente al massimo una volta
 Creato con la funzione set() o {elem, elem}.
 a = set() # insieme vuoto
-b = set([1,2,3,4]) #insieme creato da una lista
-c = {1,2} #insieme con al suo interno gli interi 1 e 2
+b = set([1,2,3,4]) # insieme creato da una lista
+c = {1,2} # insieme con al suo interno gli interi 1 e 2
 
 Tipi Set - Operazioni
 - Cardinalità del set S: len(S)
@@ -276,9 +276,9 @@ In Python un blocco di codice è caratterizzato da:
 
 Esempio:
 while b < 0:
-    b = b + 1
-    b = b + 2
-b = 0
+    b = b + 1 # dentro al ciclo
+    b = b + 2 # dentro al ciclo
+b = 0 # fuori dal ciclo
 
 Statement ;
 In Python non si usa ; per indicare la fine di un'istruzione
@@ -306,7 +306,7 @@ In Python è possibile importare moduli esterni (librerie) per poterle utilizzar
     a = DataFrame()
 
     from pandas import * --> importa tutte le funzioni del modulo senza inserire il riferimento al modulo
-    a = DataFrame 
+    a = DataFrame() 
 
 Commenti
 In Python si commenta riga per riga utilizzando il #
@@ -373,7 +373,7 @@ a
 b
 
 - Ciclo for su stringhe
-    a = "cd"
+    a = 'cd'
     for i in a:
         print(i)
 Risultato:
@@ -396,7 +396,7 @@ Risultato: --> non è garantito l'ordine
 b
 a
 
-- Ciclo for su dictionary: ad ogni iterazione vi è il riferimento ad una chiave dell’insieme
+- Ciclo for su dictionary: ad ogni iterazione vi è il riferimento ad una chiave dell'insieme
     a = {'k1':1, 'k2':2}
     for i in a:
         print(i)
@@ -420,6 +420,8 @@ Risultato 2:
 0
 1
 2
+
+30/09/24
 
 Formattare le stringhe
     var = 10
