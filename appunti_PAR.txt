@@ -287,6 +287,3 @@ Utilizza due tipi di messaggi ARP:
     - richiesta contenente l'indirizzo IP del destinatario (Will 128.213.1.5 please send me his Ethernet address?)
     - risposta contenente il corrispondente indirizzo MAC (I'm 128.213.1.5, and my Ethernet address is 87:A2:15:35:02:C3)
 ARP utilizza il broadcast della richiesta
-
-INPUT: indirizzo IP
-Arp-response: indirizzo MAC 
