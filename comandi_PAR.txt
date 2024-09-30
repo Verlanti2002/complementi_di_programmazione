@@ -1,0 +1,22 @@
+Laboratorio - Comandi
+
+30/09/24
+
+ifconfig eth0 192.168.0.1/24 --> configura l'indirizzo ip dell'interfaccia specificata
+ifconfig eth0 --> stato di configurazione dell'interfaccia specificata
+
+ip link show eth0 --> alternativa al comando ifconfig (il sottocomando "link" specifica il livello dello stack di cui vogliamo ottenere le informazioni)
+ip addr show eth0 --> stato di configurazione dell'interfaccia specificata a livello 3
+ip -json link show eth0 --> stesso output in formato json
+ip -json link show eth0 | jq --> stesso output in formato più leggibile
+ip -br link show eth0 --> minimizza l'output 
+man ip
+man ip-link
+ip -br link show dev eth0 --> comando equivalente a quelli sopra
+ip -br addr show dev eth0 --> comando equivalente a quelli sopra
+
+ping 182.168.0.2 --> invio di messaggi all'indirizzo di destinazione specificato
+tcpdump -eni eth0 --> analizza le comunicazioni (copia del traffico sulle interfacce di rete)
+    - e: informazioni aggiuntive sul protocollo ethernet
+    - n: serve ad evitare che il software ci mostri informazioni già interpretate
+    - i: permette di specificare l'interfaccia
