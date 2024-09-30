@@ -175,3 +175,139 @@ WAN wireless(Wide Area Network)
 
 PREMESSA PER I PROTOCOLLI H2N
 Se ho dei collegamenti fisici con una probabilità alta di corruzione (perdita di pacchetto) allora è meglio implementare un protocollo host to network che garantisca l'affidabilità già a livello H2N (ritrasmissione) senza dire che poi se ne occuperà il livello 4 (TCP)
+
+30/09/24
+
+Modalità di trasmissione: chi sono i mittenti e i destinatari che vogliono comunicare
+    - Unicast: comunicazione fra un singolo mittente e un singolo ricevente --> uno ad uno
+    - Multicast: comunicazione fra un singolo mittente e un gruppo di riceventi --> uno a tanti (tutti quanti)
+    - Anycast: comunicazione fra un singolo mittente ed almeno un ricevente in un gruppo --> uno a tanti (uno qualsiasi)
+    - Broadcast: comunicazione fra un singolo mittente e tutti gli altri nodi --> uno a tutti
+
+Tipi di collegamento (a livello fisico)
+Collegamento broadcast / condiviso --> canale fisico broadcast
+    - Molti host connessi a uno stesso canale di comunicazione
+    - E' necessario un protocollo di accesso al mezzo per coordinare le trasmissioni e per evitare le collisioni (chi può trasmettere?),
+      ovvero per risolvere le eventuali collisioni
+    - Sono comuni nelle LAN, WirelessLAN, reti satellitari
+Collegamento punto-punto
+    - Costituito da un unico trasmittente a un'estremità del collegamento e da un unico ricevente all'altra estremità
+    - E' il tipico collegamento fra due router o fra un modem di un accesso residenziale e il router dell'Internet Service Provider (ISP o Provider)
+
+Si possono verificare combinazione di collegamenti --> canale fisico broadcast e collegamento logico unicast
+Ethernet è un protocollo pensato per canali fisici di tipo broadcast ma per creare comunicazioni anche Unicast
+
+Collegamenti punto-punto half- e full-duplex
+Collegamento Half-Duplex
+    - Collegamento che permette solo a un partecipante di comunicare sul mezzo fisico in un istante di tempo
+    - Quasi sempre inteso in modo ancora più stringente come comunicazione unidirezionale
+Collegamento Full-Duplex
+    - Possibilità per il mittente e il destinatario di comunicare in modo indipendente l'uno dall'altro (comunicazione bidirezionale)
+    - Ad esempio, collegamento punto-punto con collegamenti interni dedicati per le due direzioni di trasferimento
+
+ATTENZIONE: Attenzione a distinguere le modalità di trasmissione e le caratteristiche del mezzo 
+
+Collegamenti del livello H2N
+A livello H2N l'unità di dato trasmesso durante la comunicazione è chiamato FRAME (deriva da Framing, parte di livello fisico del livello H2N)
+
+Adattatori per la comunicazione H2N
+- Il protocollo H2N è solitamente implementato all'interno di una scheda adattatrice, conosciuta anche col nome di Network Interface Card o NIC
+- Tutti i dispositivi (host, router, altri dispositivi di rete), per poter essere utilizzati in una rete LAN, devono essere dotati di una scheda di rete
+
+Network Interface Card (NIC)
+Dispositivo generalmente costituito da una RAM, un DSP (Digital Signal Processor), un'interfaccia bus/host e un'interfaccia di collegamento alla rete
+    - Entità semi-autonoma rispetto al sistema in cui risiede, ha un microcontrollore dedicato  
+    - Può essere sia integrata sulla scheda madre, oppure presente come dispositivo dedicato
+    - (Ethernet) Connettore RJ45
+
+Ethernet
+Inventata a metà degli anni '70 da Metcalfe che propone Ethernet nella sua tesi di PhD
+Il disegno originale prevedeva un solo canale di tipo BUS (canale condiviso broadcast, comunicazione logica di tipi Unicast) per connettere i nodi
+
+LAN Ethernet    
+Ethernet è stato pensato in origine per:
+    - topologia a bus
+    - velocità 1-10Mbps
+Attualmente utilizzato:
+    - quasi sempre in topologia a stella tramite l'impiego di ulteriori dispositivi di rete (bridge e switch)
+    - supporta velocità differenti (anche decine di Gb/s) a seconda dell'HW impiegato
+
+Caratteristiche Ethernet
+Tipo di collegamento
+    - Usa un Canale Fisico di tipo broadcast (non punto-punto): molti host connessi ad uno stesso canale di comunicazione
+    - Quando un host trasmette un pacchetto sulla LAN, TUTTE le interfacce degli host collegati lo ricevono
+Modalità di trasmissione
+    - Permette comunicazioni Unicast fra host
+    - Alcuni messaggi "speciali", necessari per il corretto funzionamento del protocollo, sono di tipo Broadcast
+
+Ethernet
+    a. Indirizzi Ethernet: MAC
+    b. Frame Ethernet
+    c. Protocollo ARP
+    d. Accesso al mezzo trasmissivo (Protocollo CSMA/CD)
+
+Indirizzi Ethernet: MAC
+- A livello Ethernet, gli host utilizzano un indirizzo hardware o indirizzo MAC (Media Access Control)
+- In realtà, l'indirizzo MAC non si riferisce all'host, ma al NIC (Network Interface Card) dell'host. 
+  Ogni NIC ha un indirizzo LAN univoco di 48 bit (6 byte), tipicamente rappresentato da 6 coppie di numeri esadecimali. Es. 81:F4:A3:AA:9C:49
+- L'indirizzo broadcast è FF-FF-FF-FF-FF-FF (tutti i bit a 1) --> il destinatario accetterà a prescindere il Frame Ethernet inviatogli da questo indirizzo
+- L'indirizzo MAC di un NIC è univoco e permanente:
+    - è chiamato anche hardware address perché incorporato nella ROM al momento della fabbricazione
+    - univoco in quanto assegnato ai produttori di NIC (Network Interface Card) dell'autorità centrale IEEE
+        - tipicamente i primi 3 byte definiscono chi ha prodotto quell'interfaccia di rete (Intel, Apple, Huawei, ...)
+        - gli amministratori di rete possono modificare l'indirizzo MAC dell'interfaccia di rete di un host
+
+Frame Ethernet
+I pacchetti scambiati a livello H2N vengono detti frame
+Indipendentemente dalla topologia, dai mezzi trasmissivi e dalla velocità di trasmissione, tutte le tecnologie Ethernet 
+fanno uso dello stesso formato per il frame che trasmettono (Frame Ethernet)
+
+Preambolo (8 byte): identifica la funzionalità di framing 
+    - i primi 7 byte hanno valore 10101010
+    - l'ultimo byte ha valore 10101011
+    - i primi 7 byte servono per “attivare” gli adattatori dei riceventi e sincronizzare i loro orologi con quello del mittente
+    - i due 1 consecutivi nell'ultimo byte avvisano l'adattatore del ricevente che la fase di sincronizzazione è terminata
+Indirizzo destinazione (6 byte): MAC address dell'host di destinazione (filtraggio da parte dell'interfaccia di rete)
+Indirizzo sorgente (6 byte): MAC address dell'host sorgente
+Tipo (2 byte): implementa una funzionalità di multiplexing (più flussi in un unico canale trasmissivo) per stabilire a quale protocollo del livello superiore inoltrare il payload
+    - necessario poichè esistono più protocolli di un livello dello stack TCP/IP
+Dati (46 - 1500 byte): payload
+CRC (Controllo a Ridondanza Ciclica, 4 byte): permette all'interfaccia che riceve i dati di rilevare la presenza di un errore nei bit del frame ricevuto 
+    - il destinatario (o meglio la sua interfaccia di rete) ricalcola il CRC sulla base dei dati ricevuti (dest. address, source address, tipo, payload) e verifica la corrispondenza con quello ricevuto
+
+Modalità promiscua: modalità dell'interfaccia di rete che permette di non filtrare i pacchetti a seconda dell'indirizzo di destinazione 
+    - in caso di non corrispondenza dell'indirizzo di destinazione il pacchetto viene comunque accettato e non scartato
+
+Protocollo ARP (Address Resolution Protocol)
+L'Address Resolution Protocol (ARP) si occupa di individuare l'indirizzo MAC di un host della stessa LAN di cui conosce l'indirizzo IP
+Il protocollo ARP è incluso nella suite di protocolli TCP/IP
+
+Funzionamento
+Utilizza due tipi di messaggi ARP:
+    - richiesta contenente l'indirizzo IP del destinatario (Will 128.213.1.5 please send me his Ethernet address?)
+    - risposta contenente il corrispondente indirizzo MAC (I'm 128.213.1.5, and my Ethernet address is 87:A2:15:35:02:C3)
+ARP utilizza il broadcast della richiesta
+
+INPUT: indirizzo IP
+ARP-reply: indirizzo MAC 
+
+Laboratorio
+Comandi utilizzati: 
+ifconfig eth0 192.168.0.1/24 --> configura l'indirizzo ip dell'interfaccia specificata
+ifconfig eth0 --> stato di configurazione dell'interfaccia specificata
+
+ip link show eth0 --> alternativa al comando ifconfig (il sottocomando "link" specifica il livello dello stack di cui vogliamo ottenere le informazioni)
+ip addr show eth0 --> stato di configurazione dell'interfaccia specificata a livello 3
+ip -json link show eth0 --> stesso output in formato json
+ip -json link show eth0 | jq --> stesso output in formato più leggibile
+ip -br link show eth0 --> minimizza l'output 
+man ip
+man ip-link
+ip -br link show dev eth0 --> comando equivalente a quelli sopra
+ip -br addr show dev eth0 --> comando equivalente a quelli sopra
+
+ping 182.168.0.2 --> invio di messaggi all'indirizzo di destinazione specificato
+tcpdump -eni eth0 --> analizza le comunicazioni (copia del traffico sulle interfacce di rete)
+    - e: informazioni aggiuntive sul protocollo ethernet
+    - n: serve ad evitare che il software ci mostri informazioni già interpretate
+    - i: permette di specificare l'interfaccia
