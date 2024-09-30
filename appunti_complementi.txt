@@ -435,6 +435,10 @@ Leggere da stdin
     utente inserisce 'ciao'
     res = 'ciao'
 
+Esercizi 1-7
+
+03/10/24
+
 Funzioni - Definizione
 Si definiscono con la parola chiave def
 La funzione è un blocco di codice (quindi indentato)

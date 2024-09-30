@@ -1,18 +1,18 @@
 # Scrivere un programma che prenda in input un testo lungo e stampi la frequenza di ogni carattere (in ordine crescente)
 
-occorrenze = []
-i = 0
-y = 0
+occorrenze = {}
 text = input('Inserire un testo lungo: ')
 
-for i in text:
-    c = 0
-    for y in text:
-        if text[i] == text[y]:
-            c = c + 1
-    occorrenze[i] = c
+# Conta le occorrenze di ogni carattere
+for char in text:
+    if char in occorrenze:
+        occorrenze[char] += 1
+    else:
+        occorrenze[char] = 1
 
-occorrenze.sort()
+# Ordina le occorrenze in base alla frequenza (ordine crescente)
+occorrenze_ordinate = dict(sorted(occorrenze.items(), key=lambda item: item[1]))
 
-for i in text:
-    print(f'{i}: {occorrenze[i]}')
+# Stampa i risultati
+for key, value in occorrenze_ordinate.items():
+    print(f'{key}: {value}')
