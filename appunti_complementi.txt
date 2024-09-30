@@ -93,6 +93,7 @@ e3 → 'mele e arance mele e arance mele e arance'
 
 26/09/24
 
+python3 filename --> esegue il file python specificato
 python3 -c 'statement' --> permette di lanciare un comando da linea di comando
     python3 -c 'print("ciao " * 2)'
 
@@ -433,3 +434,78 @@ Leggere da stdin
     terminale mostra -> inserisci qualcosa:
     utente inserisce 'ciao'
     res = 'ciao'
+
+Funzioni - Definizione
+Si definiscono con la parola chiave def
+La funzione è un blocco di codice (quindi indentato)
+
+def funzione(arg1, arg2): # non si specificano i tipi dei parametri e il valore di ritorno della funzione
+    print(arg1)
+    print(arg2)
+    return 1
+
+Esempio:
+
+def fib(n):
+    a, b = 0, 1
+    print(a)
+    for i in range(n):
+        print(b)
+        a, b = b, a + b
+
+Funzioni - Argomenti opzionali
+E' possibile definire funzioni con parametri opzionali che assumono un valore di default se non passati durante l'invocazione
+
+def funzione(arg1, arg2=0):
+    print(arg1)
+    print(arg2)
+    return 1
+
+Funzioni - Passaggio di argomenti
+a = funzione(0,1) --> notazione posizionale (positional argument)
+a = funzione(arg2=3, arg1=1) --> è possibile specificare a quale parametro ci si riferisce (keyword argument)
+a = funzione(3, arg2=1) --> prima i positional poi i keyword argument
+a = [1,2,3,4,5] funzione(*a) --> equivale a funzione(1,2,3,4,5), modo per passare ogni elemento come positional argument
+a = {a:1, b:2, c:3} funzione(**a) --> equivale a funzione(a=1,b=2,c=3), modo per passare ogni elemento come keyword argument
+
+Funzioni - Parametri formali con * e **
+Gli operatori * e ** possono anche essere utilizzati nella definizione della funzione
+    def funzione(*args, **kwargs):
+In questo caso tutti i parametri posizionali passati alla funzione vengono condensati nella tupla args
+Tutti i keyword arguments vengono condensati in un dizionario kwargs
+
+La funzione può comunque avere parametri espliciti
+    def funzione(arg1, arg2, *args, **kwargs):
+
+Funzioni - Ricorsione
+Come in altri linguaggi, in Python è possibile scrivere una funzione che chiama se stessa
+Remainder:
+- CONDIZIONE DI STOP!
+
+Esempio:
+def fib(n):
+    if (n == 0):
+        print(0)
+        return 0,1
+    a, b = fib(n-1)
+    print(a+b)
+
+Programmazione di ordine superiore
+Si definisce un linguaggio come di ordine superiore se consente di utilizzare funzioni come valori
+Le funzioni possono essere passate ad altre funzioni
+Possono essere ritornate come risultato di altre funzioni
+
+Esempio:
+def get_print_help_function(lang):
+    def eng_help():
+        print('help')
+    def ita_help():
+        print('aiuto')
+    if lang == 'eng':
+        return eng_help # il valore di ritorno è una funzione (notare l'assenza di ())
+    else:
+        return ita_help # il valore di ritorno è una funzione
+
+Esempio:
+def print_function_result(func):
+    print(f'il risultato è {func()}')

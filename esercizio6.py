@@ -2,7 +2,7 @@
 # L'utente deve poter scegliere se inserire un numero, cancellarlo o stampare l'intera rubrica
 # La struttura della rubrica è molto semplice ogni contatto ha un nome e un numero
 
-rubrica = {}
+rubrica = {} # {key='nome', value='telefono'}
 
 while True:
     print('1 Aggiungere contatto')
