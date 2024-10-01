@@ -214,3 +214,89 @@ Le epressioni regolari pure (e.r) riflettono le costruzioni dei linguaggi regola
     Parentesi  Se E è un'e.r., la scrittura (E) è un'e.r. equivalente alla prima, cioè che denota lo stesso insieme di stringhe
 
 01/10/24
+
+prefisso: sottostringa che sta all'inizio
+
+Problemi pratici
+- Nelle regole di composizione delle e.r. non esiste la possibilità di esprimere la negazione di un carattere a
+- Si provi a scrivere un'e.r. pura, sull'alfabeto ASCII per denotare tutte le stringhe che non terminano con 1
+- Allo stesso modo non esiste un operatore per indicare una potenza definita di un insieme di stringhe
+- Le estensioni che andremo ora a vedere, e che mirano a rendere le e.r. utilizzabili in concreto, caratterizzano le c.d. espressioni regolari
+estese secondo lo standard POSIX (Portable Operating System Interface for Unix)
+
+Metacaratteri e regole aggiuntive
+- Come sappiamo, i simboli dell'alfabeto sono detti anche caratteri
+- Nella descrizione formale del linguaggio si usano però anche altri simboli, che non fanno parte dell'alfabeto
+- Nel caso delle e.r., esempi di simboli usati per scopi descrittivi sono le parentesi e i simboli * e |
+    Tali simboli sono detti metacaratteri
+Nelle e.r. estese (definite, ad es. sull'alfabeto ASCII) esistono metacaratteri che denotano opportuni sotto-insiemi di caratteri dell'alfabeto.
+    Ad esempio:
+        - la scrittura [:alpha:] denota l'insieme dei caratteri alfabetici (rispetto al locale corrente)
+        - [:digit:] denota l'insieme delle cifre decimali
+        - [:alnum:] denota l'insieme dei caratteri alfabetici e numerici (le cifre)
+Dagli esempi si evince che un metacarattere è un simbolo astratto
+
+Esercizi di prova
+1. Scrivere e.r per i linguaggi sull'alfabeto {a,b} composti dalle stringhe contenenti:
+    - al più due a --> b* | b*ab* | b*ab*ab*
+    - un numero dispari b --> (a*ba*b)*a*ba*
+2. Scrivere un'e.r. per il linguaggio sull'alfabeto {a, b, c} così definito: {a^n b^m c^k | m = 0 ⇒ k = 3} --> prima tutte le a
+    a*(bb*c* | ccc)
+3. Scrivere un'e.r. per il linguaggio sull'alfabeto {a, b, c}, costituito dalle stringhe in cui ogni occorrenza di b è seguita da almeno una c  
+    (a | c | bc)*
+4. Qual è il linguaggio descritto dalla seguente espressione regolare estesa: [ab]{3} * [ab] --> [ab] = a | b
+    abbaab, aaaabb, ...
+    ((a | b)(a | b)(a | b)) (a | b) --> e.r base
+5. Scrivere un'espressione regolare per definirw il linguaggio delle stringhe sull'alfabeto {0, 1} che non contengono tre 1 di fila
+    (0 | 10 | 110) * (1 | 11)0*
+
+Espressioni regolari che ci saranno utili
+- E.r. estesa per identificatori composti dal carattere underscore, lettere e numeri e inizianti per lettera o underscore
+    [a − zA − Z_][a − zA − Z0 − 9_]∗
+- E.r. per numeri in virgola fissa (interi inclusi)
+    (0|[1 − 9][0 − 9]∗)\.?[0 − 9]∗
+- E.r. per numeri in virgola mobile
+    (0|[1 − 9][0 − 9]∗)\.?[0 − 9] ∗ ([eE][−+]?[0 − 9]+)
+
+Le espressioni regolari sono lo strumento che utilizzeremo per programmare un lexer
+
+Lexer (analizzatore lessicale)
+- Il compito principale del lexer (analizzatore lessicale) è di trasformare la sequenza di caratteri
+che costituisce l'input del compilatore (cioè il programma) in una sequenza di token
+- Il lexer agisce come subroutine del parser e, ad ogni chiamata, restituisce a quest'ultimo un token
+
+Token --> oggetto astratto (rappresentato con una struct) con le seguenti proprietà:
+    - deve avere un nome (token name)
+    - alcuni token (numeri, identificatori e costanti letterali) hanno anche un token value 
+    - alcuni altri token (keyword, parentesi, operatori relazionali o aritmetici)
+    - la posizione dove si trova il token (location)
+
+Token name          Pattern                     Esempio di lessema (sottostringa matchata)
+id                  [:alpha:][:alnum:]*         pippo1
+number              [+- ][1-9][:digit:]*        -3.14
+comparison          < | > | <= | >= | = | !=    <   
+literal             [:alpha:]                   "Pi greco"
+if                  if                          if
+while               while                       while
+
+- Il lexer è l'unico modulo del compilatore che legge l'input testuale
+- Lo scanner è un modulo separato del lexer che effettua la lettura del testo
+
+flex --> generatore di lexer
+bison --> generatore di parser
+
+Progetto di un analizzatore lessicale --> 
+- Lex strumento per creare generatore di analizzatori lessicali
+
+Regole di traduzione: descrizione delle azioni da eseguire quando viene riconosciuto un lessema che matcha un'espressione regolare
+    espressione regolare    azione
+
+    yytext: varabile globale in cui il lexer va a mettere il lessema che ha matchato il pattern (espressione regolare)
+
+Funzioni ausiliarie: main program
+
+% option noyywrap --> opzione che permette di leggere solo un file di input
+
+flex++ simpletok.l
+flex++ -o simpletok.cc simpletok.l
+clang++ simpletok simpletok.cc
