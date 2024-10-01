@@ -217,24 +217,38 @@ Le epressioni regolari pure (e.r) riflettono le costruzioni dei linguaggi regola
 
 prefisso: sottostringa che sta all'inizio
 
+Esempi:
+- L'espressione regolare 0|1*10 su B (interpretabile come 0|((1*)10), in base alle regole di precedenza) denota il linguaggio R1 = {0, 10, 110, 1110, . . .}
+- Il linguaggio R1 è chiaramente differente dal linguaggio R2 su B definito dall'espressione regolare (0|1)*10, che consiste di tutte le stringhe binarie che terminano con 10
+- Posto Σ = {a, b, c}, l'espressione regolare a(b|c)*a denota il linguaggio R3 su Σ costituito dalle stringhe che iniziano e terminano con il carattere a e che non contengono altre a
+- La scrittura (1|01)*(0|ϵ) denota il linguaggio delle stringhe su B di lunghezza almeno 1 che non contengono due caratteri 0 consecutivi
+
 Problemi pratici
 - Nelle regole di composizione delle e.r. non esiste la possibilità di esprimere la negazione di un carattere a
-- Si provi a scrivere un'e.r. pura, sull'alfabeto ASCII per denotare tutte le stringhe che non terminano con 1
 - Allo stesso modo non esiste un operatore per indicare una potenza definita di un insieme di stringhe
-- Le estensioni che andremo ora a vedere, e che mirano a rendere le e.r. utilizzabili in concreto, caratterizzano le c.d. espressioni regolari
-estese secondo lo standard POSIX (Portable Operating System Interface for Unix)
 
 Metacaratteri e regole aggiuntive
-- Come sappiamo, i simboli dell'alfabeto sono detti anche caratteri
+- Come sappiamo, i simboli dell'alfabeto sono detti anche "caratteri"
 - Nella descrizione formale del linguaggio si usano però anche altri simboli, che non fanno parte dell'alfabeto
 - Nel caso delle e.r., esempi di simboli usati per scopi descrittivi sono le parentesi e i simboli * e |
-    Tali simboli sono detti metacaratteri
-Nelle e.r. estese (definite, ad es. sull'alfabeto ASCII) esistono metacaratteri che denotano opportuni sotto-insiemi di caratteri dell'alfabeto.
+    Tali simboli sono detti metacaratteri (simboli astratti)
+- Nelle e.r. estese (definite, ad es. sull'alfabeto ASCII) esistono metacaratteri che denotano opportuni sotto-insiemi di caratteri dell'alfabeto
     Ad esempio:
         - la scrittura [:alpha:] denota l'insieme dei caratteri alfabetici (rispetto al locale corrente)
         - [:digit:] denota l'insieme delle cifre decimali
         - [:alnum:] denota l'insieme dei caratteri alfabetici e numerici (le cifre)
-Dagli esempi si evince che un metacarattere è un simbolo astratto
+- Le parentesi quadre sono metacaratteri
+- Caratteri e metacaratteri inclusi fra parentesi quadre si intendono in or
+    Ad esempio [_[:alnum:]] denota il l'insieme dei caratteri alfanumerici unito il "trattino basso" (underscore)
+- Il simbolo ^ come primo carattere all'interno di una coppia di parentesi quadre denota l'insieme dei caratteri dell'alfabeto, ad esclusione dei simboli che seguono
+    Ad esempio [^[:alnum:]] denota l'insieme di tutti i caratteri che non sono alfanumerici
+
+Problemi di matching
+- Nella parte di front-end di compilatori e interpreti, il programma (analizzatore lessicale o lexer) riceve in input il testo (programma da compilare/eseguire)
+  e un insieme di espressioni regolari, il lexer deve dire quale espressione descrive un opportuno prefisso del testo ancora da analizzatore
+    Ad esempio, se l'input ancora da esaminare fosse 
+        formula = 2*x**2
+    il prossimo match trovato dal lexer dovrebbe essere formula (un caso di identificatore) piuttosto che for (un caso di parola chiave)
 
 Esercizi di prova
 1. Scrivere e.r per i linguaggi sull'alfabeto {a,b} composti dalle stringhe contenenti:
@@ -265,11 +279,21 @@ Lexer (analizzatore lessicale)
 che costituisce l'input del compilatore (cioè il programma) in una sequenza di token
 - Il lexer agisce come subroutine del parser e, ad ogni chiamata, restituisce a quest'ultimo un token
 
-Token --> oggetto astratto (rappresentato con una struct) con le seguenti proprietà:
-    - deve avere un nome (token name)
+Token --> oggetto astratto (rappresentato con una struct) con le seguenti proprietà: --> esempi di token: numeri, identificatori e le parole riservate di un linguaggio di programmazione
+    - deve avere un nome (token name, sempre in grassetto) --> identificatore che deve avere lo stesso significato per lexer e parser
     - alcuni token (numeri, identificatori e costanti letterali) hanno anche un token value 
     - alcuni altri token (keyword, parentesi, operatori relazionali o aritmetici)
     - la posizione dove si trova il token (location)
+
+Esempio:
+Supponiamo che la porzione di input da analizzare abbia come prefisso
+    somma = 0
+Alle richieste del parser, il lexer restituisce in sequenza i token
+    - (id, "somma")
+    - assignment
+    - (number,0)
+
+Pattern, lessemi e (nomi di) token
 
 Token name          Pattern                     Esempio di lessema (sottostringa matchata)
 id                  [:alpha:][:alnum:]*         pippo1
@@ -279,24 +303,77 @@ literal             [:alpha:]                   "Pi greco"
 if                  if                          if
 while               while                       while
 
+Compiti del lexer
 - Il lexer è l'unico modulo del compilatore che legge l'input testuale
 - Lo scanner è un modulo separato del lexer che effettua la lettura del testo
+- Il lexer vero e proprio, nel processo di tokenizzazione, procede anche a riconoscere e "filtrare" commenti, spazi e altri caratteri di separazione
+- Deve inoltre associare gli eventuali errori trovati da altri moduli del compilatore alle posizione dove tali errori si sono verificati
 
+In linux:
 flex --> generatore di lexer
 bison --> generatore di parser
 
-Progetto di un analizzatore lessicale --> 
-- Lex strumento per creare generatore di analizzatori lessicali
+Lex: strumento per generare di analizzatori lessicali
+    - software in grado di generare automaticamente un altro programma che riconosce stringhe di un linguaggio regolare
+    - l'input del programma Lex è costituito da un insieme di espressioni regolari / pattern da riconoscere
+    - inoltre, ad ogni espressione regolare E, l'utente associa un'azione, espressa sotto forma di codice in linguaggio C/C++
+    - tale codice andrà in esecuzione quando l'analizzatore lessicale prodotto da Lex avrà riconosciuto un lessema descritto da E
 
-Regole di traduzione: descrizione delle azioni da eseguire quando viene riconosciuto un lessema che matcha un'espressione regolare
-    espressione regolare    azione
+Schema d'uso di Lex
+Sorgente Lex (lexer.l) --> Compilatore Lex --> lex.yy.c / lex.yy.cc
+lex.yy.cc / lex.yy.cc --> Compilatore C/C++ --> a.out
+charstring --> Running a.out --> token sequence
 
-    yytext: varabile globale in cui il lexer va a mettere il lessema che ha matchato il pattern (espressione regolare)
+Struttura di un programma Lex
+- Un generico programma Lex contiene tre sezioni, separate dal dalla sequenza %%
+    Dichiarazioni   
+    %%
+    Regole di traduzione
+    %%
+    Funzioni ausiliarie
+- La sezione "Dichiarazioni" può contenere definizione di costanti/variabili, specifica di header file e, soprattutto, definizioni regolari, cioè espressioni regolari "con un nome"
+- La sezione intermedia specifica le "regole di traduzione", ovvero le descrizioni delle azioni che devono essere eseguite a seguito del riconoscimento dell'istanza di un pattern
+    riconoscimento di un lessema che matcha un'espressione regolare
+- L'ultima sezione può contenere funzioni aggiuntive
 
-Funzioni ausiliarie: main program
+Esempio di "tokenizer":
 
+%{
+# include <iostream >
+using namespace std ;
+%}
+
+DIGIT [0 -9]
+DIGIT1 [1 -9]
+BLANK [ /t/n]
+
+/* read only one input file */
+% option noyywrap
+
+%%
+"+" { cout << " operatore <" << yytext [0] << ">" << endl ; }
+"-" { cout << " operatore <" << yytext [0] << ">" << endl ; }
+"=" { cout << " operatore <" << yytext [0] << ">" << endl ; }
+{ DIGIT1 }{ DIGIT }* { cout << " numero <" << yytext << ">" << endl ; }
+{ BLACK } { }
+. { cout << " Token sconosciuto <" << yytext [0] << ">" << endl ; }
+%%
+
+int main (int argc , char ** argv ) {
+    FlexLexer * lexer = new yyFlexLexer ;
+    lexer -> yylex ();
+    return 0;
+}
+
+Analisi del codice
+- Al termine dell'esecuzione, yylex invoca il metodo yywrap
+- Questo può quindi essere utilizzato per aprire un secondo file di input e chiamare nuovamente yylex
+- Se viene utilizzata l'opzione noyywrap, il metodo yywrap non viene invocato e non deve essere ridefinito
+
+yytext: varabile globale in cui il lexer va a mettere il lessema che ha matchato il pattern (o espressione regolare)
 % option noyywrap --> opzione che permette di leggere solo un file di input
 
-flex++ simpletok.l
-flex++ -o simpletok.cc simpletok.l
-clang++ simpletok simpletok.cc
+flex++ -o simpletok.cc simpletok.l --> compilazione del programma Lex
+clang++/g++ simpletok simpletok.cc --> compilazione del file C++
+
+03/10/24
