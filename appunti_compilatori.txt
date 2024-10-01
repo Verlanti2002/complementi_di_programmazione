@@ -345,7 +345,6 @@ using namespace std ;
 
 DIGIT [0 -9]
 DIGIT1 [1 -9]
-BLANK [ /t/n]
 
 /* read only one input file */
 % option noyywrap
@@ -355,7 +354,6 @@ BLANK [ /t/n]
 "-" { cout << " operatore <" << yytext [0] << ">" << endl ; }
 "=" { cout << " operatore <" << yytext [0] << ">" << endl ; }
 { DIGIT1 }{ DIGIT }* { cout << " numero <" << yytext << ">" << endl ; }
-{ BLACK } { }
 . { cout << " Token sconosciuto <" << yytext [0] << ">" << endl ; }
 %%
 
@@ -374,6 +372,6 @@ yytext: varabile globale in cui il lexer va a mettere il lessema che ha matchato
 % option noyywrap --> opzione che permette di leggere solo un file di input
 
 flex++ -o simpletok.cc simpletok.l --> compilazione del programma Lex
-clang++/g++ simpletok simpletok.cc --> compilazione del file C++
+clang++/g++ -o simpletok simpletok.cc --> compilazione del file C++
 
 03/10/24
