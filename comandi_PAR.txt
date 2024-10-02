@@ -20,3 +20,7 @@ tcpdump -eni eth0 --> analizza le comunicazioni (copia del traffico sulle interf
     - e: informazioni aggiuntive sul protocollo ethernet
     - n: serve ad evitare che il software ci mostri informazioni già interpretate
     - i: permette di specificare l'interfaccia
+
+arp --> mostra l'ARP Table
+arp -n --> mostra l'indirizzo ip al posto dell'hostname
+ip neigh --> mostra anch'esso l'ARP Table

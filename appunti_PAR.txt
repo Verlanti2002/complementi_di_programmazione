@@ -220,7 +220,7 @@ Dispositivo generalmente costituito da una RAM, un DSP (Digital Signal Processor
     - Può essere sia integrata sulla scheda madre, oppure presente come dispositivo dedicato
     - (Ethernet) Connettore RJ45
 
-Ethernet
+Ethernet --> protocollo inaffidabile (perdita di pacchetti)
 Inventata a metà degli anni '70 da Metcalfe che propone Ethernet nella sua tesi di PhD
 Il disegno originale prevedeva un solo canale di tipo BUS (canale condiviso broadcast, comunicazione logica di tipi Unicast) per connettere i nodi
 
@@ -278,7 +278,7 @@ CRC (Controllo a Ridondanza Ciclica, 4 byte): permette all'interfaccia che ricev
 Modalità promiscua: modalità dell'interfaccia di rete che permette di non filtrare i pacchetti a seconda dell'indirizzo di destinazione 
     - in caso di non corrispondenza dell'indirizzo di destinazione il pacchetto viene comunque accettato e non scartato
 
-Protocollo ARP (Address Resolution Protocol)
+Protocollo ARP (Address Resolution Protocol) --> Sottoprotocollo (del livello H2N) del protocollo Ethernet
 L'Address Resolution Protocol (ARP) si occupa di individuare l'indirizzo MAC di un host della stessa LAN di cui conosce l'indirizzo IP
 Il protocollo ARP è incluso nella suite di protocolli TCP/IP
 
@@ -287,3 +287,178 @@ Utilizza due tipi di messaggi ARP:
     - richiesta contenente l'indirizzo IP del destinatario (Will 128.213.1.5 please send me his Ethernet address?)
     - risposta contenente il corrispondente indirizzo MAC (I'm 128.213.1.5, and my Ethernet address is 87:A2:15:35:02:C3)
 ARP utilizza il broadcast della richiesta
+
+ARP Request --> Broadcast
+ARP Reply --> Unicast
+
+02/10/24
+
+Un'ARP Request può anche essere Unicast, si ha quando un host vuole assicurarsi che il Mac Address di quel determinato host corrisponda con la entry presente nella propria Arp Table
+    --> verifica consistenza della cache locale
+
+ARP Table: cache locale temporanea che contiene le associazioni indirizzo IP - MAC address
+
+Esistono anche cache statiche configurate in modo permanente per questioni di sicurezza (spoofing) 
+    - inserire manualmente delle entry permanenti nella tabella ARP
+    - disattivare completamente il protocollo ARP
+
+Migliorare le prestazioni di ARP
+- Cache ARP: per ridurre il traffico sulla rete causato dallo scambio di messaggi ARP:
+    - ciascun host effettua un caching temporaneo delle risoluzioni IP/MAC nella sua tabella di instradamento
+    - il mittente inserisce nella richiesta la corrispondenza fra il proprio indirizzo IP e quello MAC
+
+Flusso di funzionamento del protocollo Ethernet
+- Se liinput è l'indirizzo IP (come solito):
+    1. Controllare se IP in tabella ARP locale
+    2. Se assente o TTL scaduto, eseguire protocollo ARP per ottenere MAC address destinatario
+        - Se scade timeout, assumo che il destinatario non sia presente nella rete Ethernet (non c’è una risposta esplicita negativa)
+    3. Uso il MAC address ottenuto nel payload della risposta ARP come MAC address destinazione dei frame da inviare nella comunicazione
+        - Periodicamente, il sistema esegue ARP per verificare la corrispondenza IP-MAC
+
+Protocollo RARP (deprecato)
+- Reverse Address Resolution Protocol
+- Funzione opposta al protocollo ARP --> Dato un indirizzo MAC, ricava l’indirizzo IP corrispondente
+- Meccanismo analogo ad ARP
+    - Broadcast di una richiesta
+    - Solo l’host interessato risponde (in questo caso, il server RARP)
+    - Struttura dei messaggi analoga a quella del protocollo ARP
+
+Accesso al mezzo trasmissivo (CSMA/CD) --> protocollo strettamente legato al livello fisico di Ethernet
+Protocollo di accesso multiplo
+- I frame Ethernet vengono trasmessi dagli host collegati allo stesso segmento di LAN su un canale condiviso (bus) broadcast a bit rate elevato
+(modalità di accesso multiplo)
+- La spedizione contemporanea di più frame causa rischi di collisione
+- E' necessario un protocollo di accesso al mezzo per coordinare le trasmissioni sul canale condiviso e evitare, se possibile, collisioni ovvero
+gestirle nel caso in cui non sia stato possibile evitarle
+
+Protocollo CSMA/CD (Carrier Sense Multiple Access Collision Detection)
+- Protocollo completamente decentralizzato --> non esiste un'entità centrale a governare i nodi della rete
+- Quando un host deve trasmettere, "ascolta" il canale (carrier sense)
+- Quando un host trasmette, lo fa alla massima velocità consentita dal canale
+- Quando un host rileva una collisione, ritrasmette il frame fino a quando la trasmissione non ha successo
+- La ritrasmissione non è immediata, ma l'host attende un periodo di tempo calcolato in modo pseudo-casuale
+
+Carrier sense (rilevazione della portante sul canale)
+    - ogni host che deve tramsettere ascolta il bus e decide di trasmettere solo se lo trova libero ("listen before talking")
+
+Multiple Access (accessi multipli)
+    - Nonostante la funzione di carrier sense, essendo un protocollo decentralizzato, due host potrebbero decidere di trasmettere in contemporanea
+    - Essendo il tempo di propagazione del segnale sulla rete non nullo, un host può presumere che il mezzo sia libero
+     anche se un altro ha già iniziato a trasmettere
+
+Collision Detection (rilevamento della collisione)
+    - Se si verifica una sovrapposizione di trasmissioni si ha una collisione
+    - Per rilevare una collisione, ogni host mentre trasmette ascolta i segnali sul mezzo, confrontandoli con quelli da
+    esso generati ("listen while talking")
+    - Se viene rilevata una collisione, l'host interrompe la trasmissione
+
+CSMA/CD: collisioni
+A seguito di una collisione:
+- Ogni host sospende la trasmissione e trasmette un segnale di JAMMING (disturbo) per avvisare della collisione tutti gli host
+- Il segnale di JAMMING assicura che ogni host rilevi la collisione anche nel caso in cui la collisione sia stata di breve durata
+- Gli host trasmittenti ripetono il tentativo di trasmissione dopo un ritardo (pseudo-)casuale, determinato mediante
+    un "algoritmo di exponential back-off", che ha il compito disaccoppiare i tentativi di ritrasmissione, fino a un massimo di 16 ritrasmissioni
+
+Binary Exponential Back-off (BEB) --> logica probabilistica (output differente indipendente dagli input), non deterministica
+- Il ritardo è K x 512 intervalli di tempo (tempo necessario per trasmettere un bit), dove K dipende dal numero di collisioni già rilevate
+- Algoritmo di exponential back-off --> la cardinalità dell'insieme da cui è scelto K cresce esponenzialmente col numero delle collisioni
+    - K ← [0, 2^n -1]
+- Ethernet usa un approccio "calmierato" quando n = 10
+    - 1a collisione: scegli K tra {0,1};
+    - n-esima collisione: scegli K tra {0, 1, …, 2^m -1 }
+        (dove m=min{n,10})
+    - Da 10a collisione a 15a : scegli K tra {0, …, 1023}
+    - 16a collisione: RINUNCIA
+
+BEB: attesa esponenziale
+• Scopo: si cerca di stimare il livello di carico della rete per adattare i successivi tentativi di ritrasmissione
+• Tramite l'incremento esponenziale delle dimensioni dell'insieme dei valori tra cui si sceglie il ritardo di attesa,
+    l'host riesce ad adattare la ritrasmissione alle diverse situazioni di traffico:
+• Basso ritardo quando pochi host collidono
+• Ritardo di attesa maggiore in presenza di sovraccarico
+
+Dati (e dimesione)
+L'unità massima trasferibile (MTU - Maximum Transfer Unit) per Ethernet è 1500 byte
+    - Se i dati superano i 1500 byte, devono essere frammentati (si vedrà in seguito)
+La dimensione minima del campo dati è 46 byte
+    - Se la dimensione dei dati è inferiore a 46 byte, il campo dati deve essere "completato" (byte di stuffing) fino a 46 byte con byte di riempimento
+     (che verranno rimossi all'atto della ricezione)
+
+NB: L'MTU limita la dimensione massima dei pacchetti anche dei livelli superiori dello stack TCP/IP
+
+Architetture LAN Ethernet
+
+Rete LAN 
+- Una Local Area Network (LAN) è una rete in cui i nodi possono comunicare fra di loro tramite protocollo di livello H2N
+- Il nome deriva dell’estensione della rete, limitata sia nelle distanze fra i nodi sia nel numero di nodi collegati
+
+Back end LAN + Backbone LAN
+- Le LAN che costituiscono gli elementi fondamentali di accesso a Internet sono dette back end LAN
+    e possono essere collegate mediante backbone LAN
+- Le back end LAN realizzano sistemi (dipartimentali) di medie dimensioni, interconnettendo server, dispositivi di
+    storage, PC, ecc., con le seguenti caratteristiche:
+        – Media-alta capacità di traffico (tipicamente 1 Gps)
+        – Accessi distribuiti
+        – Distanza limitata tra i componenti
+        – Costi ridotti
+- Le backbone LAN servono per interconnettere diverse back-end LAN e devono garantire:
+    – Affidabilità
+    – Elevata capacità di traffico (tipicamente, >1 Gbps, esistono LAN per data center fino a 100 Gbps)
+
+Topolgie per LAN
+A seconda dei contesti e dei protocolli impiegati, possiamo individuare diverse topologie di LAN:
+• Albero 
+• Bus --> massima economicità - minime performance
+• Anello -->trade off tra soluzione a bus e altre
+• Stella
+
+Topologia a bus
+- È il metodo più semplice di connettere in rete degli host (schema originale di Ethernet)
+    Consiste di un singolo cavo (chiamato dorsale o segmento) che connette in modo lineare tutti gli host
+I messaggi sono inviati a tutti gli host come segnali elettrici e vengono accettati solo dal NIC dell’host il cui
+    indirizzo MAC è contenuto nel segnale di origine
+
+Topologia ad anello
+- Gli host sono connessi tramite un unico cavo circolare privo di terminatori
+- I segnali sono inviati lungo il circuito chiuso passando attraverso ciascun host che funge da ripetitore e
+    ritrasmette il segnale (se non è il mittente)
+
+Topologia a stella
+- Gli host sono connessi a un dispositivo di rete centrale (centro stella):
+    i messaggi da qualunque mittente a qualunque destinatario sono inviati attraverso tale componente
+La quasi totalità delle reti Ethernet moderne sono progettate con topologia a stella
+- Nel caso di interruzione di uno dei cavi di connessione di un host al dispositivo centrale, solo quell’host verrà isolato dalla rete
+    Non c'è single point of failure a livello di rete
+- In caso di mancato funzionamento del componente centrale saranno interrotte tutte le attività di rete
+    C'è single point of failure a livello di dispositivo
+
+Topologia ad albero
+
+Tipi di dispositivi di rete
+- Hub (repeater) --> centro stella di livello 1
+- Switch --> centro stella di livello 2
+- Bridge --> centro stella di livello 2
+    In alcuni contesti, si parla anche di Bridge e Switch di livello 3, ovvero in grado di leggere anche alcune informazioni del protocollo di rete
+
+Hub
+Dispositivo di livello fisico dotato di due o più interfacce
+Essenzialmente, è un ripetitore che opera a livello di singoli bit (livello 1 – fisico):
+    --> inoltra i bit ricevuti su una interfaccia a tutte le altre interfacce (rete condivisa, stesse performance della rete a bus)
+Ogni nodo connesso fa parte dello stesso segmento di LAN
+
+Switch --> autoconfigurante (assegna le interfacce agli host leggendo gli indirizzi MAC sorgenti durante una comunicazione tra due host)
+Sono dispositive fisici che implementano funzionalità di inoltro selettivo dei frame e offrono alte prestazioni
+    – Inoltro (selettivo) di frame a livello 2 --> inoltra il frame Ethernet soltanto all'host di destinazione (leggendo il suo MAC)
+    – Filtraggio utilizzando indirizzi MAC
+Tipicamente, lo switch è un dispositivo con molte interfacce di rete ed è usato come centro stella
+Quando un frame deve essere inoltrato su un segmento di LAN, il bridge usa il protocollo CSMA/CD per trasmettere
+
+Metodi di filtraggio e inoltro
+Gli switch imparano quali host possono essere raggiunti attraverso quali interfacce (autoconfigurante)
+    – Mantengono delle tabelle di filtraggio costruite automaticamente senza bisogno dell-intervento di amministratori di rete
+    – Quando viene ricevuto un frame, lo switch "impara" la locazione del mittente
+    – Registra la locazione del mittente nella tabella di filtraggio
+Record per la tabella di filtraggio:
+    – Indirizzo MAC dell'host, Interfaccia dello switch, Time-To-Live (TTL) --> tempo massimo per cui vale una certa informazione
+            che è il periodo di validità delle informazioni memorizzate nella tabella di filtraggio
+    – Record vecchi nella tabella di filtraggio vengono scartati (TTL più o meno configurabile a seconda dello switch)
