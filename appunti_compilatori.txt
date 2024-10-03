@@ -52,7 +52,7 @@ In generale, un'implementazione interpretata include anche un traduttore che è 
 
 OSSERVAZIONE: il bytecode è tipicamente l'assembler della macchina virtuale
 
-Compilatore: modulo che effettua la traduzione da sorgente ad una qualche rappresentazione intermedia, esso è suddiviso a sua volta in 3 moduli:
+Compilatore: modulo che effettua la traduzione da codice sorgente ad una qualche rappresentazione intermedia, esso è suddiviso a sua volta in 3 moduli:
     - front-end (compilatori e interpreti): prende il sorgente e produce una sua rappresentazione intermedia indipendente dal linguaggio e dalla macchina
     - middle-end: esegue un'ottimizzazione del codice intermedio
     - back-end: produce il codice per l'architettura target
@@ -60,10 +60,12 @@ Compilatore: modulo che effettua la traduzione da sorgente ad una qualche rappre
 Il front/middle/back-end è composto da 4/1/2 fasi
 sequenza di caratteri --> ANALIZZATORE LESSICALE --> sequenza di token --> ANALIZZATORE SINTATTICO --> albero sintattico --> GENERATORE DI CODICE INTERMEDIO --> rappresentazione intermedia | --> GENERATORE DI CODICE --> codice macchina --> OTTIMIZZATORE DIPENDENTE DALLA TECNOLOGIA --> codice macchina
 
-ANALIZZATORE LESSICALE (LEXER): raggruppa sequenze di caratteri in oggetti (TOKEN)
-ANALIZZATORE SINTATTICO (PARSER): start run, prende una sequenza di token e indica se essi formano una struttura linguistica legale del linguaggio (correttezza sintattica)
-ANALIZZATORE SEMANTICO: analisi dei tipi, controlla la corrispondenza del numero di parametri di una procedura
-GENERATORE DI CODICE INTERMEDIO: produce un codice lineare
+Fasi del front-end di un compilatore:
+    - ANALIZZATORE LESSICALE (LEXER): raggruppa sequenze di caratteri in oggetti (TOKEN)
+    - ANALIZZATORE SINTATTICO (PARSER): start run, prende una sequenza di token e indica se essi formano una struttura linguistica legale del linguaggio (correttezza sintattica)
+    - ANALIZZATORE SEMANTICO: analisi dei tipi, controlla la corrispondenza del numero di parametri di una procedura
+    - GENERATORE DI CODICE INTERMEDIO: produce un codice lineare
+
 TABELLA DEI SIMBOLI: struttura dati (dizionario: mapping chiave-valore) che memorizza i simboli incontrati nell'analisi del sorgente
 
 Esempio pratico:
@@ -99,7 +101,7 @@ Type Checking: controllo dei tipi (statico --> controllo a tempo di compilazione
 Scoping rules: regole che descrivono la visibilità (o scope) delle variabili all'interno del programma
 Ambiente: mapping fra nomi e locazioni di memoria
 Memoria: mapping fra locazioni di memoria e valori
-Linguaggio funzionale: caratterizzato da un mapping diretto tra nome e valore, il programmatore ha visibilità del solo ambiente
+Linguaggio funzionale: caratterizzato da un mapping diretto tra nome e valore, il programmatore ha visibilità del solo ambiente (e non della memoria)
 l-value (left value): entità che ha una posizione in memoria e quindi può essere assegnato o modificato
     - ha un indirizzo in memoria
     - può essere usato per ricevere un valore
@@ -119,11 +121,11 @@ Linguaggi formali in informatica
 - Linguaggi di interrogazione: SQL, SPARQL, GraphLog
 - Linguaggi di configurazione: sendmail, apache, iptables
 
-Alfabeto: insieme finito di simboli (detti anche caratteri)
+ALFABETO: insieme finito di simboli (detti anche CARATTERI)
     - Σ per indicare un generico alfabeto
     - (a, b e c) per indicare un generico carattere utilizziamo le lettere iniziali dell'alfabeto latino
 
-Stringhe: sequenza di caratteri ∈ Σ
+STRINGHE: sequenza di caratteri ∈ Σ
     - per indicare una stringa generica utilizziamo le ultime lettere dell'alfabeto latino (w, x, y, z)
     - per indicare una stringa generica utilizziamo le prime lettere dell'alfabeto greco (α, β, γ)
     - per indicare una stringa speciale (formata da zero caratteri) o vuota usiamo ϵ
@@ -135,15 +137,15 @@ Operazioni sulle stringhe
     - associativa ( (A*B)*C = A*(B*C) ), ma non commutativa (A*B != B*A)
     - la stringa vuota ϵ è l'elemento neutro della concatenazione
 - |x| lunghezza della stringa x
-- xi carattere in posizione i, i = 0, . . . , |x| − 1
+- x[i] carattere in posizione i, i = 0, . . . , |x| − 1
 - Una sottostringa di x é una stringa formata dai caratteri xi, xi+1, . . . , xj, per opportuni valori di i e j, 0 ≤ i ≤ j < n
 - x^R indica la stringa ottenuta rovesciando i caratteri di x
     x = Roma --> x^R = amoR
 
-Linguaggi
+LINGUAGGI
 Un linguaggio su un dato alfabeto Σ è un insieme di stringhe di caratteri (o simboli) ∈ Σ
 - Esempio di linguaggio con un numero di stringhe finito
-    L2 = {00,01,10,11} --> definito su B e formato da 4 stringhe
+    L2 = {00,01,10,11} --> definito su B e formato da 4 stringhe da 2 caratteri ciascuna
 
 Operazioni con i linguaggi
 - operazioni insiemistiche (unione, intersezione, differenza, ...)
@@ -187,7 +189,7 @@ I formalismi più importanti sono: --> strumenti fondamentali per definire il co
     - grammatica context-free
 
 Linguaggi regolari
-Un linguaggio L su alfabeto Σ = {a1, ..., an} si dice regolare se può essere espresso usando un numero finito di operazioni di 
+Un linguaggio L su alfabeto Σ = {a1, ..., an} si dice "regolare" se può essere espresso usando un numero finito di operazioni di 
 concatenazione, unione e chiusura riflessiva a partire dai suoi linguaggi unitari {a1}, ..., {an}
     - {ϵ}, {a1}, . . . , {an} sono linguaggi regolari
     - se R1 ed R2 sono linguaggi regolari, allora R1 ∪ R2 e R1R2 sono linguaggi regolari
@@ -207,11 +209,11 @@ Le epressioni regolari pure (e.r) riflettono le costruzioni dei linguaggi regola
     Base
         - ϵ è un'espressione regolare che denota il linguaggio composto dalla sola stringa vuota ϵ
         - per ogni a ∈ Σ, a è un'e.r. che denota il linguaggio unitario {a}
-    Ricorsione Se E ed F sono e.r. che denotano, rispettivamente, i linguaggi E ed F, allora la scrittura:
+    Ricorsione --> Se E ed F sono e.r. che denotano, rispettivamente, i linguaggi E ed F, allora la scrittura:
         - EF è un'e.r. che denota il linguaggio EF (concatenazione)
         - E|F (o anche E + F) è un'e.r. che denota il linguaggio E ∪ F (unione)
         - E* è un'e.r. che denota il linguaggio E* (chiusura riflessiva)
-    Parentesi  Se E è un'e.r., la scrittura (E) è un'e.r. equivalente alla prima, cioè che denota lo stesso insieme di stringhe
+    Parentesi --> Se E è un'e.r., la scrittura (E) è un'e.r. equivalente alla prima, cioè che denota lo stesso insieme di stringhe
 
 01/10/24
 
@@ -239,7 +241,7 @@ Metacaratteri e regole aggiuntive
         - [:alnum:] denota l'insieme dei caratteri alfabetici e numerici (le cifre)
 - Le parentesi quadre sono metacaratteri
 - Caratteri e metacaratteri inclusi fra parentesi quadre si intendono in or
-    Ad esempio [_[:alnum:]] denota il l'insieme dei caratteri alfanumerici unito il "trattino basso" (underscore)
+    Ad esempio [_[:alnum:]] denota l'insieme dei caratteri alfanumerici unito il "trattino basso" (underscore)
 - Il simbolo ^ come primo carattere all'interno di una coppia di parentesi quadre denota l'insieme dei caratteri dell'alfabeto, ad esclusione dei simboli che seguono
     Ad esempio [^[:alnum:]] denota l'insieme di tutti i caratteri che non sono alfanumerici
 
@@ -251,18 +253,19 @@ Problemi di matching
     il prossimo match trovato dal lexer dovrebbe essere formula (un caso di identificatore) piuttosto che for (un caso di parola chiave)
 
 Esercizi di prova
+NB: Il carattere * in un'espressione regolare è un quantificatore e indica che l'elemento che lo precede può comparire zero o più volte
 1. Scrivere e.r per i linguaggi sull'alfabeto {a,b} composti dalle stringhe contenenti:
     - al più due a --> b* | b*ab* | b*ab*ab*
     - un numero dispari b --> (a*ba*b)*a*ba*
-2. Scrivere un'e.r. per il linguaggio sull'alfabeto {a, b, c} così definito: {a^n b^m c^k | m = 0 ⇒ k = 3} --> prima tutte le a
+2. Scrivere un'e.r. per il linguaggio sull'alfabeto {a, b, c} così definito: {a^n b^m c^k | m = 0 ⇒ k = 3} --> se m = 0 (quindi non ci sono b) allora k = 3 (ci devono essere esattamente 3 c)
     a*(bb*c* | ccc)
 3. Scrivere un'e.r. per il linguaggio sull'alfabeto {a, b, c}, costituito dalle stringhe in cui ogni occorrenza di b è seguita da almeno una c  
     (a | c | bc)*
-4. Qual è il linguaggio descritto dalla seguente espressione regolare estesa: [ab]{3} * [ab] --> [ab] = a | b
+4. Qual è il linguaggio descritto dalla seguente espressione regolare estesa: [ab]{3}∗[ab] --> [ab] = a | b
     abbaab, aaaabb, ...
     ((a | b)(a | b)(a | b)) (a | b) --> e.r base
-5. Scrivere un'espressione regolare per definirw il linguaggio delle stringhe sull'alfabeto {0, 1} che non contengono tre 1 di fila
-    (0 | 10 | 110) * (1 | 11)0*
+5. Scrivere un'espressione regolare per definire il linguaggio delle stringhe sull'alfabeto {0, 1} che non contengono tre 1 di fila
+    (0 | 10 | 110)* (1 | 11)0*
 
 Espressioni regolari che ci saranno utili
 - E.r. estesa per identificatori composti dal carattere underscore, lettere e numeri e inizianti per lettera o underscore
@@ -274,9 +277,8 @@ Espressioni regolari che ci saranno utili
 
 Le espressioni regolari sono lo strumento che utilizzeremo per programmare un lexer
 
-Lexer (analizzatore lessicale)
-- Il compito principale del lexer (analizzatore lessicale) è di trasformare la sequenza di caratteri
-che costituisce l'input del compilatore (cioè il programma) in una sequenza di token
+Lexer (Analizzatore Lessicale)
+- Il compito principale del lexer è di trasformare la sequenza di caratteri che costituisce l'input del compilatore (cioè il programma) in una sequenza di token
 - Il lexer agisce come subroutine del parser e, ad ogni chiamata, restituisce a quest'ultimo un token
 
 Token --> oggetto astratto (rappresentato con una struct) con le seguenti proprietà: --> esempi di token: numeri, identificatori e le parole riservate di un linguaggio di programmazione
@@ -313,7 +315,7 @@ In linux:
 flex --> generatore di lexer
 bison --> generatore di parser
 
-Lex: strumento per generare di analizzatori lessicali
+Lex: strumento per generare analizzatori lessicali
     - software in grado di generare automaticamente un altro programma che riconosce stringhe di un linguaggio regolare
     - l'input del programma Lex è costituito da un insieme di espressioni regolari / pattern da riconoscere
     - inoltre, ad ogni espressione regolare E, l'utente associa un'azione, espressa sotto forma di codice in linguaggio C/C++
@@ -325,7 +327,7 @@ lex.yy.cc / lex.yy.cc --> Compilatore C/C++ --> a.out
 charstring --> Running a.out --> token sequence
 
 Struttura di un programma Lex
-- Un generico programma Lex contiene tre sezioni, separate dal dalla sequenza %%
+- Un generico programma Lex contiene tre sezioni, separate dalla sequenza %%
     Dichiarazioni   
     %%
     Regole di traduzione
@@ -339,27 +341,27 @@ Struttura di un programma Lex
 Esempio di "tokenizer":
 
 %{
-# include <iostream >
-using namespace std ;
+# include <iostream>
+using namespace std;
 %}
 
-DIGIT [0 -9]
-DIGIT1 [1 -9]
+DIGIT [0-9]
+DIGIT1 [1-9]
 
 /* read only one input file */
-% option noyywrap
+%option noyywrap
 
 %%
-"+" { cout << " operatore <" << yytext [0] << ">" << endl ; }
-"-" { cout << " operatore <" << yytext [0] << ">" << endl ; }
-"=" { cout << " operatore <" << yytext [0] << ">" << endl ; }
-{ DIGIT1 }{ DIGIT }* { cout << " numero <" << yytext << ">" << endl ; }
-. { cout << " Token sconosciuto <" << yytext [0] << ">" << endl ; }
+"+"                 { cout << " operatore <" << yytext [0] << ">" << endl ; }
+"-"                 { cout << " operatore <" << yytext [0] << ">" << endl ; }
+"="                 { cout << " operatore <" << yytext [0] << ">" << endl ; }
+{DIGIT1}{DIGIT}*    { cout << " numero <" << yytext << ">" << endl ; }
+.                   { cout << " Token sconosciuto <" << yytext [0] << ">" << endl ; }
 %%
 
-int main (int argc , char ** argv ) {
-    FlexLexer * lexer = new yyFlexLexer ;
-    lexer -> yylex ();
+int main (int argc, char ** argv) {
+    FlexLexer * lexer = new yyFlexLexer;
+    lexer -> yylex();
     return 0;
 }
 
@@ -369,10 +371,31 @@ Analisi del codice
 - Se viene utilizzata l'opzione noyywrap, il metodo yywrap non viene invocato e non deve essere ridefinito
 
 yytext: varabile globale in cui il lexer va a mettere il lessema che ha matchato il pattern (o espressione regolare)
-% option noyywrap --> opzione che permette di leggere solo un file di input
+%option noyywrap --> opzione che permette di leggere solo un file di input
 
+Compilazione:
 flex++ -o simpletok.cc simpletok.l --> compilazione del programma Lex
 clang++/g++ -o simpletok simpletok.cc --> compilazione del file C++
+
+Esecuzione:
+echo "12+13=25" | ./simpletok --> esecuzione con input
+
+Output:
+    numero <12>
+    operatore <+>
+    numero <13>
+    operatore <=>
+    numero <25>
+
+echo "y+=y-1" | ./simpletok --> esecuzione con input 
+
+Output:
+    Token sconosciuto <y>
+    operatore <+>
+    operatore <=>
+    Token sconosciuto <y>
+    operatore <->
+    numero <1>
 
 03/10/24
 
@@ -385,56 +408,59 @@ Applicazioni "standalone" --> non richiedono la presenza di altri programmi o ap
 
 Il comando wc realizzato con Lex (prima versione)
 %{
-# include <iostream >
-using namespace std ;
+#include <iostream>
+using namespace std;
+
 unsigned long charCount = 0, wordCount = 0, lineCount = 0;
 %}
 
 word [^ \t\n]+
 eol \n
 
-% option noyywrap
+%option noyywrap
 
 %%
-{ word }        { wordCount ++; charCount += yyleng ;}
-{ eol }         { charCount ++; lineCount ++;}
-.               charCount ++;
+{word}        {wordCount ++; charCount += yyleng ;}
+{eol}         {charCount ++; lineCount ++;}
+.             charCount ++;
 %%
 
-int main ( int argc , char ** argv ) {
-    FlexLexer * lexer = new yyFlexLexer ;
-    lexer -> yylex ();
-    cout << lineCount << " " << wordCount << " " << charCount << endl ;
+int main (int argc, char** argv) {
+    FlexLexer * lexer = new yyFlexLexer;
+    lexer -> yylex();
+    cout << lineCount << " " << wordCount << " " << charCount << endl;
 }
 
 wcsep.l --> File Lex, senza main, per wc (seconda versione)
 %{
-# include <iostream >
-using namespace std ;
+#include <iostream>
+using namespace std;
+
 unsigned long charCount = 0, wordCount = 0, lineCount = 0;
 %}
 
-word [^ \t\n]+
+word [^ \t\n]+         // uno o più caratteri diversi da quelli indicati (spazio, tabulazione e newline) 
 eol \n
 
-% option noyywrap
+%option noyywrap
 
 %%
-{ word }        { wordCount ++; charCount += yyleng ;}
-{ eol }         { charCount ++; lineCount ++;}
-.               charCount ++;
+{word}        {wordCount++; charCount += yyleng;}
+{eol}         {charCount++; lineCount++;}
+.             charCount++;
 %%
 
 wcmain.cpp --> Main program per l'applicazione wc
-# include <iostream>
-# include <FlexLexer.h>
+#include <iostream>
+#include <FlexLexer.h>
 using namespace std;
-extern unsigned long charCount , wordCount , lineCount ;
 
-int main () {
-    FlexLexer * lexer = new yyFlexLexer ;
-    lexer - > yylex ();
-    cout << lineCount << " " << wordCount << " " << charCount << endl ;
+extern unsigned long charCount , wordCount , lineCount;
+
+int main() {
+    FlexLexer * lexer = new yyFlexLexer;
+    lexer -> yylex ();
+    cout << lineCount << " " << wordCount << " " << charCount << endl;
     return 0;
 }
 
@@ -444,6 +470,12 @@ g++ -c wcsep.cpp
 g++ -c wcmain.cpp
 g++ -o wc wcsep.cpp wcmain.cpp
 
+Esecuzione:
+echo "y = 12+17; " | ./wc
+
+Output:
+    1 3 12 --> 1: linecount 3: wordCount 12: charCount
+    
 Il linguaggio LFM
 - LFM è un semplice linguaggio che ci permetterà di dare concretezza ai concetti teorici analizzati a lezione
 - In questo primo "assaggio", implementiamo un lexer in grado di "tokenizzare" i lessemi che possono essere presenti solo in alcune della frasi legali di LFM
@@ -494,39 +526,40 @@ sep      [ \t\n]
 "True"           {cout << "- Costante logica: " << yytext << endl; }
 {id}             {cout << "- Identificatore: " << yytext << endl; }
 .                {cout << "- Token sconosciuto: " << yytext[0] << endl; }
-
 %%
 
 int main(int argc, char** argv) {
     FlexLexer* lexer = new yyFlexLexer;
-    lexer->yylex();
+    lexer -> yylex();
     return 0;
 }
 
 Compilazione:
 flex++ -o lexer.cpp lexer.l
 g++ -o lexer lexer.cpp
+
+Esecuzione:
 echo "if y=0:x ; True:MCD(y,x%y) end" | ./lexer
 
 Output:
-- Parola chiave: if
-- Identificatore: y
-- Test uguaglianza: =
-- Numero: 0
-- Separatore condizione/azione: :
-- Identificatore: x
-- Separatore alternative condizionali: ;
-- Costante logica: True
-- Separatore condizione/azione: :
-- Identificatore: MCD
-- Parentesi aperta: (
-- Identificatore: y
-- Separatore argomenti: ,
-- Identificatore: x
-- Operatore: %
-- Identificatore: y
-- Parentesi chiusa: )
-- Parola chiave: end
+    - Parola chiave: if
+    - Identificatore: y
+    - Test uguaglianza: =
+    - Numero: 0
+    - Separatore condizione/azione: :
+    - Identificatore: x
+    - Separatore alternative condizionali: ;
+    - Costante logica: True
+    - Separatore condizione/azione: :
+    - Identificatore: MCD
+    - Parentesi aperta: (
+    - Identificatore: y
+    - Separatore argomenti: ,
+    - Identificatore: x
+    - Operatore: %
+    - Identificatore: y
+    - Parentesi chiusa: )
+    - Parola chiave: end
 
 Automi finiti
 In questo corso siamo interessati agli automi finiti in quanto descrivono lo stesso insieme di linguaggi (i linguaggi regolari) descritti da espressioni regolari
