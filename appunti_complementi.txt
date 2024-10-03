@@ -435,7 +435,7 @@ Leggere da stdin
     utente inserisce 'ciao'
     res = 'ciao'
 
-Esercizi 1-7
+Esercizi 1-7 Python Tipi e Costrutti Base
 
 03/10/24
 
@@ -511,5 +511,184 @@ def get_print_help_function(lang):
         return ita_help # il valore di ritorno è una funzione
 
 Esempio:
-def print_function_result(func):
-    print(f'il risultato è {func()}')
+def print_function_result(func): --> la funzione prende in ingresso una funzione che chiamerà al suo interno
+    print(f'il risultato è {func()}') 
+
+Programmazione di ordine superiore - CLOSURE
+def print_msg(msg):
+    def printer():
+        print(msg) --> Concetto di CLOSURE: le funzioni innestate possono accedere alle variabili delle funzioni madri
+    return printer
+
+Programmazione di ordine superiore - Lambda
+La funzione map()
+Essa prende in ingresso una funzione e una sequenza di oggetti
+Applica tale funzione a ogni oggetto e ne ritorna il risultato (come lista)
+
+Esempio:
+def quad(a)
+    return a**2
+
+map(quad, [1,2,3])
+
+Python permette di passare la funzione senza definirla in un altro punto del codice
+Viene detta "lambda function" (o anche funzione anonima)
+Sintassi: lambda argomenti: valore di ritorno
+Può contenere un'unica istruzione che sarà il valore di ritorno (non si mette return)
+
+map(lambda x:x**2, [1,2,3])
+
+Generatori
+Abbiamo visto che in Python si può iterare su qualsiasi oggetto che abbia un metodo __iter__ che ritorni un iteratore
+Questo implica la costruzione di una classe con tale metodo --> i generatori semplificano questo lavoro
+
+Generatori - Funzioni generatrici
+- Le funzioni Generatrici generano ad ogni iterazione l'elemento successivo
+- E come se ritornassero una serie di valori invece che un unico risultato
+- Si creano attraverso il comando yield seguito dal valore da ritornare
+- Quando una funzione contiene il comando yield, essa viene trattata da Python come un Generatore
+- Implicitamente viene dotata dei metodo __iter__ e __next__
+
+Esempio: range() fai da te!
+
+def range(stop):
+    i = 0
+    while i < stop:
+        yield i
+        i = i + 1
+
+Spiegazione:
+1. Inizializzazione (i = 0): La variabile i viene inizializzata a 0
+2. Ciclo while: La funzione entra in un ciclo while che continua finché il valore di i è minore di stop.
+3. yield i: 
+    - La parola chiave yield trasforma questa funzione in un generatore
+    - Un generatore in Python restituisce un valore temporaneamente, sospende l'esecuzione e permette di riprenderla successivamente
+    - In questo caso, la funzione restituisce il valore di i e rimane in attesa fino a quando non viene richiesta la successiva iterazione
+4. Incremento di i: Dopo aver restituito il valore corrente di i, la funzione incrementa i di 1 (i = i + 1), per poi tornare alla condizione del ciclo while
+5. Terminazione: Quando i raggiunge o supera il valore di stop, il ciclo termina e il generatore smette di produrre valori
+
+Generatori - Espressioni generatrici
+I Generatori possono anche essere creati con una sintassi molto stringata
+Si parla di espressioni generatrici
+Sintassi: (espressione for variabili in sequenza)
+Esempio: (x**2 for x in range(10)) --> il generatore ritornerà ad ogni iterazione il quadrato dei numeri da 0 a 9
+
+List comprehension
+Una sintassi simile (usando [] invece che ()) può essere usata per generare liste in modo immediato:
+a = [x**2 for x in range(10)]
+a conterrà una lista dei quadrati da 0 a 9
+
+Scope
+1. Built-in: entità sempre disponibili. Es. print, disponibile non appena apriamo la shell
+2. Global: entità definite nel codice (non dentro a funzioni o blocchi)
+3. Enclosing: entità incapsulate per effetto della closure
+4. Local: entità definite dentro il blocco di codice in cui si è
+
+1. print('ciao')
+2. a = 1
+3. 
+    def encaps():
+        "b" = 2
+        def local():
+            c = 3 + "b"
+4. 
+    def encaps():
+        b = 2
+        def local():
+            "c" = 3 + b
+
+print --> scope built-in
+a --> scope globale
+b --> scope enclosed
+c --> scope locale
+
+Si può forzare l'utilizzo di un'entità dello scope globale con la parola chiave "global"
+
+print('ciao')
+"x" = 1
+def encaps():
+    x = 2
+    def local():
+        "global" x --> in questo caso x si riferisce al "primo" x
+        x = 3
+def another():
+    x = 0
+
+Scope - argomenti funzioni
+def fun(x): 
+    print(x) --> 5
+    x = 'ciao' --> viene modificata la x locale (passaggio per valore)
+    print(x) --> 'ciao'
+
+x = 5
+fun(x)
+print(x) --> 5
+
+def fun(x):
+    print(x) --> [1, 2]
+    x.append(3)
+    print(x) --> [1, 2, 3]
+
+x = [1,2]
+fun(x) --> la lista è passata sempre per riferimento
+print(x) --> [1, 2, 3]
+
+Gestione delle eccezioni
+Le eccezioni possono essere sollevate in due modi:
+    1. Automaticamente: Queste eccezioni si verificano in seguito a anomalie a runtime causate da istruzioni (ad esempio, divisione per zero)
+    2. Manualmente: I programmatori possono sollevare manualmente eccezioni utilizzando istruzioni come "throw" o "raise"
+In caso di eccezione, viene eseguito del codice di gestione
+Se non è presente un gestore specifico, verrà utilizzato un gestore predefinito che stamperà lo stack delle chiamate ed uscirà dal programma
+
+Esempio: 
+try:
+    codice --> viene eseguito 
+except Classe_eccezione as identificativo:
+    codice --> viene eseguito se e solo se viene sollevata un'eccezione del tipo Classe_eccezione
+except Altraclasse_eccezione as identificativo:
+    codice --> viene eseguito se e solo se viene sollevata un'eccezione del tipo Altraclasse_eccezione
+except: 
+    codice --> viene eseguito se e solo se viene sollevata un'eccezione non catturata esplicitamente prima
+else:
+    codice --> viene eseguito se e solo se non venga sollevata nessuna eccezione nel blocco try
+finally:
+    codice --> viene eseguito sempre, Indipendentemente dal fatto che un'eccezione sia stata sollevata o meno
+
+All'interno di una funzione (o blocco) si sollevano le eccezioni con il comando raise
+    raise NameException(arg1,arg2)
+
+Decoratori
+Si usano i decoratori per aggiungere funzionalità ad una funzione
+
+Per esempio: misurare il tempo di esecuzione di una funzione
+
+import time    # Importa il modulo time per gestire il tempo
+import random  # Importa il modulo random per generare numeri casuali
+
+def func(x):
+    # La funzione mette in pausa l'esecuzione per un tempo casuale, che varia tra 0 e 'x' secondi
+    time.sleep( random.random()*x )
+    # random.random() restituisce un numero casuale tra 0 e 1, che viene moltiplicato per 'x'
+
+start = time.time() # Memorizza il tempo corrente all'inizio (prima di eseguire la funzione)
+func(5)
+end = time.time() # Memorizza il tempo corrente alla fine (dopo aver eseguito la funzione)
+print ('ci ha messo ', end - start, ' secondi')
+
+Funzione per misurare il tempo
+
+import time  # Importa il modulo time per misurare il tempo
+
+def time_function(function): # funzione che calcola il tempo di esecuzione della funzione passata come parametro
+    def new_function(args*, kwargs**): # Il wrapper: estende o personalizza il comportamento di una funzione esistente
+        start = time.time() # Misura il tempo di inizio
+        value = function(args*, kwargs**) # Esegue la funzione passata con gli argomenti ricevuti, e memorizza il valore di ritorno in value
+        end = time.time() # Misura il tempo di fine
+        print ('ci ha messo ', end - start, ' secondi') 
+        return value # Ritorna il valore della funzione originale
+return new_function # Ritorna il wrapper
+
+La si applica ad altre funzioni con la sintassi @
+@time_function 
+def func4(x,y,z)
+    time.sleep( random.random()*x+(y-z) )

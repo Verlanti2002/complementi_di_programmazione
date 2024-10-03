@@ -375,3 +375,214 @@ flex++ -o simpletok.cc simpletok.l --> compilazione del programma Lex
 clang++/g++ -o simpletok simpletok.cc --> compilazione del file C++
 
 03/10/24
+
+Applicazioni "standalone" --> non richiedono la presenza di altri programmi o applicazioni hardware per funzionare
+- Uno strumento come Lex può essere utilmente impiegato anche per la creazione di applicazioni standalone
+- Ad esempio, il programma Lex riportato nelle slide seguenti "emula" l'utility wc di Linux; conta cioè caratteri, parole e linee presenti in un file
+- Del programma daremo in realtà due versioni, di fatto identiche ma organizzate in modo diverso,
+ la prima in un file singolo e la seconda su due file, che andremo a compilare separatamente
+- I programmi mettono in evidenza l'esistenza di un'altra variabile globale, yyleng, che memorizza la lunghezza del lessema che ha provocato il match
+
+Il comando wc realizzato con Lex (prima versione)
+%{
+# include <iostream >
+using namespace std ;
+unsigned long charCount = 0, wordCount = 0, lineCount = 0;
+%}
+
+word [^ \t\n]+
+eol \n
+
+% option noyywrap
+
+%%
+{ word }        { wordCount ++; charCount += yyleng ;}
+{ eol }         { charCount ++; lineCount ++;}
+.               charCount ++;
+%%
+
+int main ( int argc , char ** argv ) {
+    FlexLexer * lexer = new yyFlexLexer ;
+    lexer -> yylex ();
+    cout << lineCount << " " << wordCount << " " << charCount << endl ;
+}
+
+wcsep.l --> File Lex, senza main, per wc (seconda versione)
+%{
+# include <iostream >
+using namespace std ;
+unsigned long charCount = 0, wordCount = 0, lineCount = 0;
+%}
+
+word [^ \t\n]+
+eol \n
+
+% option noyywrap
+
+%%
+{ word }        { wordCount ++; charCount += yyleng ;}
+{ eol }         { charCount ++; lineCount ++;}
+.               charCount ++;
+%%
+
+wcmain.cpp --> Main program per l'applicazione wc
+# include <iostream>
+# include <FlexLexer.h>
+using namespace std;
+extern unsigned long charCount , wordCount , lineCount ;
+
+int main () {
+    FlexLexer * lexer = new yyFlexLexer ;
+    lexer - > yylex ();
+    cout << lineCount << " " << wordCount << " " << charCount << endl ;
+    return 0;
+}
+
+Per la compilazione:
+flex++ -o wcsep.cpp wcsep.l
+g++ -c wcsep.cpp
+g++ -c wcmain.cpp
+g++ -o wc wcsep.cpp wcmain.cpp
+
+Il linguaggio LFM
+- LFM è un semplice linguaggio che ci permetterà di dare concretezza ai concetti teorici analizzati a lezione
+- In questo primo "assaggio", implementiamo un lexer in grado di "tokenizzare" i lessemi che possono essere presenti solo in alcune della frasi legali di LFM
+- Diamo alcune esempi di tali frasi:
+    1 external printf(x) --> descrive l'utilizzo di funzioni esterne
+    2 function MCD(x y) --> descrive il prototipo di funzione
+    3 if y=0:x ; True:MCD(y,x%y) end --> descrive il costrutto condizionale che insieme alla chiamata di funzione, è l'unico costrutto di controllo del linguaggio
+
+Lessico di LFM (prima versione)
+Fanno parte del lessico:
+    - Gli operatori aritmetici +, -, * (che denota la moltiplicazione), / e % (che denota il resto nella divisione intera)
+    - Gli operatori relazionali =, >, <, >= e <=
+    - Le parentesi tonde, la virgola, il punto e virgola e i due punti
+    - Le due parole chiave external e function
+    - I numeri interi
+    - Gli identificatori
+
+lexer.l
+%{
+#include <iostream>
+using namespace std;
+%}
+
+/* read only one input file */
+%option noyywrap
+
+id      [a-zA-Z][a-zA-Z_0-9]*
+integer  0|[1-9][0-9]∗
+sep      [ \t\n]
+
+%%
+{sep}            {}
+"%"              {cout << "- Operatore: " << yytext[0] << endl; }
+":"              {cout << "- Separatore condizione/azione: " << yytext[0] << endl; }
+";"              {cout << "- Separatore alternative condizionali: " << yytext[0] << endl; }
+"="              {cout << "- Test uguaglianza: " << yytext[0] << endl; }
+"("              {cout << "- Parentesi aperta: " << yytext[0] << endl; }
+")"              {cout << "- Parentesi chiusa: " << yytext[0] << endl; }
+","              {cout << "- Separatore argomenti: " << yytext[0] << endl; }
+{integer}        { errno = 0;
+                   int n = stoi(yytext, NULL);
+                   cout << "- Numero: " << n << endl; 
+                 }
+"function"       {cout << "- Parola chiave: " << yytext << endl; }
+"external"       {cout << "- Parola chiave: " << yytext << endl; }
+"if"             {cout << "- Parola chiave: " << yytext << endl; }
+"end"            {cout << "- Parola chiave: " << yytext << endl; }
+"True"           {cout << "- Costante logica: " << yytext << endl; }
+{id}             {cout << "- Identificatore: " << yytext << endl; }
+.                {cout << "- Token sconosciuto: " << yytext[0] << endl; }
+
+%%
+
+int main(int argc, char** argv) {
+    FlexLexer* lexer = new yyFlexLexer;
+    lexer->yylex();
+    return 0;
+}
+
+Compilazione:
+flex++ -o lexer.cpp lexer.l
+g++ -o lexer lexer.cpp
+echo "if y=0:x ; True:MCD(y,x%y) end" | ./lexer
+
+Output:
+- Parola chiave: if
+- Identificatore: y
+- Test uguaglianza: =
+- Numero: 0
+- Separatore condizione/azione: :
+- Identificatore: x
+- Separatore alternative condizionali: ;
+- Costante logica: True
+- Separatore condizione/azione: :
+- Identificatore: MCD
+- Parentesi aperta: (
+- Identificatore: y
+- Separatore argomenti: ,
+- Identificatore: x
+- Operatore: %
+- Identificatore: y
+- Parentesi chiusa: )
+- Parola chiave: end
+
+Automi finiti
+In questo corso siamo interessati agli automi finiti in quanto descrivono lo stesso insieme di linguaggi (i linguaggi regolari) descritti da espressioni regolari
+In particolare, da ogni espressione regolare è possibile costruire algoritmicamente un automa finito non deterministico da utilizzare nel riconoscimento di token
+
+Definizione informale
+- Un automa finito deterministico (AFD), può essere visto come un calcolatore elementare dotato di stato interno e supporto unidirezionale di input
+- Il funzionamento dell'automa consiste di transizioni di stato a seguito della lettura di un simbolo da un dispositivo di input
+- Ad ogni stato q sono in generale associate azioni (come la stampa di messaggi) che l'automa esegue quando transita in q
+
+Descrizione formale
+Un AFD M è una quintupla
+    M = (Σ, Q, q0, Qf , δ),
+in cui
+    - Σ è l'alfabeto di input
+    - Q è un insieme finito i cui elementi sono detti stati dell'automa
+    - q0 è un elemento speciale di Q, detto stato iniziale
+    - Qf ⊆ Q è l'insieme degli stati finali, detti anche di accettazione dell'input
+    - δ è la funzione che determina le transizioni di stato
+        Essa mappa coppie <stato, simbolo> in stati: δ : Q × Σ → Q
+
+Computazioni di un automa
+- Definibili in modo intuitivo come sequenza di passi
+- Ad ogni passo, l'automa si trova in uno stato q (inizialmente q = q0), legge un simbolo x dall'input e transita nello stato δ(q, x)
+- La computazione termina al verificarsi di una delle seguenti situazioni:
+    - mancanza di input: non vi sono più simboli di input
+    - transizione non specificata in corrispondenza dello stato attuale e del simbolo letto --> la funzione di transizione non è specificata
+- Il numero di transizioni effettuate prima della terminazione è detto lunghezza della computazione e ne rappresenta una misura del costo
+
+Rappresentazione di automi
+- Un diagramma di transizione è un grafo i cui nodi ed archi rappresentano, rispettivamente, stati e transizioni
+- Ogni arco è etichettato da un simbolo di input
+- Lo stato iniziale viene evidenziato mediante una freccia entrante
+- Gli stati finali sono indicati tramite doppia cerchiatura oppura da una freccia uscente
+
+Rappresentazione di un AFD
+- La rappresentazione di un AFD coincide "essenzialmente" con la rappresentazione della funzione di transizione δ
+- Questa può essere semplicemente data come tabella, con m = |Q| righe (stati dell'automa) ed n = |Σ| colonne (alfabeto di input)
+
+Simulazione di automi deterministici
+- L'algoritmo riceve in ingresso M (automa) e l'input X per M e produce l'output che darebbe M su input X
+- Nella descrizione dell'algoritmo (in pseudocodice) si suppone che:
+    - l'input X sia terminato dal carattere $   
+    - tale carattere non appartiene all'alfabeto Σ dell'automa
+    - se, per una determinata coppia stato-simbolo, <q, x>, la funzione di transizione è indefinita, si pone δ(q, x) = ⊥
+
+Algoritmo AFD-Sim
+1: q ← q0 --> assegnazione stato iniziale
+2: x ← nextchar(X) --> assegnazione primo carattere dell'input
+3: while (x != $) do --> finché l'input è diverso dal carattere terminatore $ rimango dentro al ciclo
+4:    if δ(q, x) != ⊥ then --> finchè la funzione di transizione non è indefinitia
+5:       q ← δ(q, x) --> assegnazione del nuovo stato
+6:    else
+7:       reject
+8:    x ← nextchar(X) --> scorrimento dell'input
+9: if q ∈ Qf then --> se lo stato attuale appartiene ad uno degli stati finali 
+10:   accept --> accettazione dell'input
+11: else
+12:   reject
