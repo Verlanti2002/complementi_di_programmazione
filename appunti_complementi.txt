@@ -667,8 +667,7 @@ import random  # Importa il modulo random per generare numeri casuali
 
 def func(x):
     # La funzione mette in pausa l'esecuzione per un tempo casuale, che varia tra 0 e 'x' secondi
-    time.sleep( random.random()*x )
-    # random.random() restituisce un numero casuale tra 0 e 1, che viene moltiplicato per 'x'
+    time.sleep(random.random()*x) # random.random() restituisce un numero casuale tra 0 e 1, che viene moltiplicato per 'x'
 
 start = time.time() # Memorizza il tempo corrente all'inizio (prima di eseguire la funzione)
 func(5)
@@ -686,9 +685,9 @@ def time_function(function): # funzione che calcola il tempo di esecuzione della
         end = time.time() # Misura il tempo di fine
         print ('ci ha messo ', end - start, ' secondi') 
         return value # Ritorna il valore della funzione originale
-return new_function # Ritorna il wrapper
+    return new_function # Ritorna il wrapper
 
 La si applica ad altre funzioni con la sintassi @
 @time_function 
 def func4(x,y,z)
-    time.sleep( random.random()*x+(y-z) )
+    time.sleep(random.random() * x + (y-z))

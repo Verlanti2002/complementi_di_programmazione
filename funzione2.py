@@ -8,19 +8,19 @@ def decoratore(func):
         if len(args) == 1 and len(kwargs) == 0:
             modifica = input(f"Vuoi modificare il parametro '{args[0]}'? (si/no): ").lower()
             if modifica == 'si':
-                nuovo_parametro = input("Inserisci il nuovo valore: ")
+                nuovo_parametro = input('Inserire il nuovo valore: ')
                 try:
                     # Prova a convertire il nuovo parametro nel tipo del vecchio parametro
-                    args = (type(args[0])(nuovo_parametro),)
+                    args = (type(args[0]) (nuovo_parametro),)
                 except ValueError:
-                    print("Errore: impossibile convertire il parametro nel tipo corretto.")
+                    print('Errore: impossibile convertire il parametro nel tipo corretto!')
                     return
         
         # Esegue la funzione originale
         risultato = func(*args, **kwargs)
         
         # Stampa il risultato a video
-        print(f"Risultato: {risultato}")
+        print(f'Risultato: {risultato}')
         
         # Ritorna il risultato della funzione
         return risultato
