@@ -341,7 +341,7 @@ Struttura di un programma Lex
 Esempio di "tokenizer":
 
 %{
-# include <iostream>
+#include <iostream>
 using namespace std;
 %}
 
@@ -420,9 +420,9 @@ eol \n
 %option noyywrap
 
 %%
-{word}        {wordCount ++; charCount += yyleng ;}
-{eol}         {charCount ++; lineCount ++;}
-.             charCount ++;
+{word}        {wordCount++; charCount += yyleng ;}
+{eol}         {charCount++; lineCount++;}
+.             charCount++;
 %%
 
 int main (int argc, char** argv) {
