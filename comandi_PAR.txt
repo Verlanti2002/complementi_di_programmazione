@@ -24,3 +24,5 @@ tcpdump -eni eth0 --> analizza le comunicazioni (copia del traffico sulle interf
 arp --> mostra l'ARP Table
 arp -n --> mostra l'indirizzo ip al posto dell'hostname
 ip neigh --> mostra anch'esso l'ARP Table
+
+07/10/24
