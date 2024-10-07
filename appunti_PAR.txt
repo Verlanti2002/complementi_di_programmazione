@@ -459,7 +459,7 @@ Quando un frame deve essere inoltrato su un segmento di LAN, il bridge usa il pr
 
 Metodi di filtraggio e inoltro
 Gli switch imparano quali host possono essere raggiunti attraverso quali interfacce (autoconfigurante)
-    – Mantengono delle tabelle di filtraggio costruite automaticamente senza bisogno dell'intervento di amministratori di rete
+    – Mantengono delle tabelle di filtraggio (Hash Table) costruite automaticamente senza bisogno dell'intervento di amministratori di rete
     – Quando viene ricevuto un frame, lo switch "impara" la locazione del mittente
     – Registra la locazione del mittente nella tabella di filtraggio
 Record per la tabella di filtraggio:
@@ -469,18 +469,30 @@ Record per la tabella di filtraggio:
 
 07/10/24
 
+Lo switch crea un mapping tra numero di porta (o interfaccia) e indirizzo MAC
+
+Cavi incrociati (crossover): connessioni fra dispositivi di rete dello stesso livello dello stack TCP/IP (es. switch-switch, host-host)
+Cavi dritti (straight): connessioni fra dispositivi di livello differente (es. switch-host)
+
+Hub
+● Un hub è un dispositivo di rete che permette di connettere due o più host o dispositivi di rete
+● A differenza degli switch, non utilizza regole di inoltro. Invia tutti i dati ricevuti da ogni porta su tutte le altre porte
+
+Bridge
+● Un bridge è un dispositivo di rete che permette di unire due segmenti di rete
+    - Si uniscono i domini di broadcast Ethernet
+    - Non riguarda il livello IP (ovvero, non avviene routing)
+● Dispositivo di rete di livello 2
+    - Si uniscono i domini di broadcast
+    - I domini di collisione rimangono separati
+● Da questo punto di vista sono bridge anche gli switch
+
 Laboratorio
-
-Switch: crea un mappping tra numero di porta (o interfaccia) e indirizzo MAC
-Cavo incrociato: per collegare dispositivi che supportano gli stessi livello dello stack TCP/IP
-Cavo dritto: per collegare dispositivi che supportano livelli differenti dello stack TCP/IP
-
-HASH Table (Forward Table): tabella di instradamento dello switch
 
 help --> visualizza i comandi eseguibili sul terminale proprietario dello switch
 hash/print --> mostra il contenuto della Hash Table
-hash/setsize
-hash/setexpire --> permette di modificare il ttl
+hash/setsize --> resize la Hash Table
+hash/setexpire --> permette di modificare il TTL
 
 HOST M1
 nano /etc/network/interfaces --> file che permette di creare le varie configurazioni di rete persistenti (letto a tempo di boot dal sistema)

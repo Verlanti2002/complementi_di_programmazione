@@ -26,3 +26,70 @@ arp -n --> mostra l'indirizzo ip al posto dell'hostname
 ip neigh --> mostra anch'esso l'ARP Table
 
 07/10/24
+
+help --> visualizza i comandi eseguibili sul terminale proprietario dello switch
+hash/print --> mostra il contenuto della Hash Table
+hash/setsize --> resize la Hash Table
+hash/setexpire --> permette di modificare il TTL
+
+Come configurare il file /etc/network/interfaces:
+nano /etc/network/interfaces --> file che permette di creare le varie configurazioni di rete persistenti (letto a tempo di boot dal sistema)
+
+Contenuto del file /etc/network/interfaces:
+auto eth0 --> il sistema capisce che l'amministratore vuole attivare l'interfaccia 0 a tempo di boot
+
+iface eth0 inet static --> direttiva per la configurazione dell'interfaccia 0 in modo statico (manuale)
+    address 192.168.0.1/24  --> assegnazione indirizzo ip
+
+ifup eth0 --> attiva l'interfaccia specificata (si utilizza una volta configurato il file interfaces)
+ifdown eth0 --> disattiva l'interfaccia specificata
+ifconfig eth0 --> mostra la configurazione a runtime dell'interfaccia specificata
+
+ifconfig eth0 up --> attiva l'interfaccia specificata senza assegnare un indirizzo ip
+tcpdump -eni eth0 --> per ascoltare il traffico di rete in una determinata interfaccia
+
+hash/showinfo --> mostra i parametri attuali di configurazione dello switch
+
+ip neigh flush all --> cancellazione dell'arp table
+
+tmux  --> software che permette di aprire più terminali in un uno solo (Terminal Multiplexer)
+Modalità comandi --> CTRL-B
+    " --> split orizzontale
+    % --> split verticale 
+    c --> nuovo tab
+    d --> detach (distacca la sessione esistente) 
+    tmux attach --> riapre il tab detachato
+    logout / CTRL-D --> per uscire dal terminale
+    frecce direzionali --> per muoversi fra split
+    numero del tab [0-9] --> per muoversi fra tab
+
+arping 192.168.0.2 --> testa una comunicazione attraverso il protocollo ARP (manda in continuazione delle richeste ARP)
+    - bypassa l'ARP Table
+    - funziona solo in rete locale
+    - richiede i permessi di amministratore
+
+dmesg --> attiva/disattiva la modalità promiscua dell'interfaccia (visualizza i messaggi del kernel)
+
+arping -0i eth0 192.168.0.1 --> testa le comunicazioni anche senza aver assegnato l'ip del mittente e la sua relativa interfaccia
+    - a differenza del comando ping che necessita la configurazione dell'ip nel mittente
+
+bridge: funzionalità svolta da un nodo tramite una logica software che esegue lo stesso ruolo di inoltraggio dello switch
+    - può inoltrare anche pacchetti da una rete ethernet a una rete Wi-Fi
+
+Configurazione di un bridge:
+brctl addbr br0 --> creazione di un bridge (astratto)
+brctl show br0 --> mostra le informazioni del bridge specificato
+brctl addif br0 eth0 --> aggiunge l'interfaccia specificata al bridge
+ifconfig eth0 up --> attiva l'interfaccia specificata
+ifconfig br0 up --> attiva l'interfaccia virtuale per la funzionalità di bridging sul nodo
+ifconfig br0 192.168.0.4/24 --> è possibile assegnare un indirizzo ip al bridge (se svolto, non vanno configurati gli ip nelle altre interfacce)
+
+Come creare una configurazione persistente per un bridge:
+nano /etc/network/interfaces
+
+Contenuto del file /etc/network/interfaces:
+auto br0 --> il sistema capisce che l'amministratore vuole attivare il bridge 0 a tempo di boot
+
+iface br0 inet static
+    bridge_ports eth0 eth1 --> direttiva per la configurazione delle interfacce 0 e 1 in modo statico (manuale)
+    address 0.0.0.0 --> indirizzo speciale (nessun indirizzo assegnato)
