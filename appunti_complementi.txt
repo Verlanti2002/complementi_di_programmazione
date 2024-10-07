@@ -584,14 +584,16 @@ Scope
 3. Enclosing: entità incapsulate per effetto della closure
 4. Local: entità definite dentro il blocco di codice in cui si è
 
-1. print('ciao')
-2. a = 1
-3. 
+1. Built-in
+    print('ciao')
+2. Global
+    a = 1
+3. Enclosing
     def encaps():
         "b" = 2
         def local():
             c = 3 + "b"
-4. 
+4. Local
     def encaps():
         b = 2
         def local():
@@ -635,8 +637,8 @@ print(x) --> [1, 2, 3]
 
 Gestione delle eccezioni
 Le eccezioni possono essere sollevate in due modi:
-    1. Automaticamente: Queste eccezioni si verificano in seguito a anomalie a runtime causate da istruzioni (ad esempio, divisione per zero)
-    2. Manualmente: I programmatori possono sollevare manualmente eccezioni utilizzando istruzioni come "throw" o "raise"
+    1. Automaticamente: queste eccezioni si verificano in seguito a anomalie a runtime causate da istruzioni (ad esempio, divisione per zero)
+    2. Manualmente: i programmatori possono sollevare manualmente eccezioni utilizzando istruzioni come "throw" o "raise"
 In caso di eccezione, viene eseguito del codice di gestione
 Se non è presente un gestore specifico, verrà utilizzato un gestore predefinito che stamperà lo stack delle chiamate ed uscirà dal programma
 
@@ -652,7 +654,7 @@ except:
 else:
     codice --> viene eseguito se e solo se non venga sollevata nessuna eccezione nel blocco try
 finally:
-    codice --> viene eseguito sempre, Indipendentemente dal fatto che un'eccezione sia stata sollevata o meno
+    codice --> viene eseguito sempre, indipendentemente dal fatto che un'eccezione sia stata sollevata o meno
 
 All'interno di una funzione (o blocco) si sollevano le eccezioni con il comando raise
     raise NameException(arg1,arg2)
@@ -678,12 +680,12 @@ Funzione per misurare il tempo
 
 import time  # Importa il modulo time per misurare il tempo
 
-def time_function(function): # funzione che calcola il tempo di esecuzione della funzione passata come parametro
-    def new_function(args*, kwargs**): # Il wrapper: estende o personalizza il comportamento di una funzione esistente
+def time_function(function): # Funzione che calcola il tempo di esecuzione della funzione passata come parametro
+    def new_function(*args, **kwargs): # Il wrapper: estende o personalizza il comportamento di una funzione esistente
         start = time.time() # Misura il tempo di inizio
-        value = function(args*, kwargs**) # Esegue la funzione passata con gli argomenti ricevuti, e memorizza il valore di ritorno in value
+        value = function(*args, **kwargs) # Esegue la funzione passata con gli argomenti ricevuti, e memorizza il valore di ritorno in value
         end = time.time() # Misura il tempo di fine
-        print ('ci ha messo ', end - start, ' secondi') 
+        print('ci ha messo: ', end - start, ' secondi') 
         return value # Ritorna il valore della funzione originale
     return new_function # Ritorna il wrapper
 
@@ -691,3 +693,19 @@ La si applica ad altre funzioni con la sintassi @
 @time_function 
 def func4(x,y,z)
     time.sleep(random.random() * x + (y-z))
+
+Esempio: 
+def d_f(f):
+    def function(*args, **kwargs):
+        print('Ciao!')
+        return f(*args, **kwargs)
+    return function
+
+# @d_f
+def pippo(x, y, z):
+    print(x)
+    print(y)
+    print(z)
+
+d_f(pippo)(1, 2, 3)
+pippo(1,2,3)
