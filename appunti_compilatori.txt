@@ -564,7 +564,7 @@ Output:
 Automi finiti
 In questo corso siamo interessati agli automi finiti in quanto descrivono lo stesso insieme di linguaggi (i linguaggi regolari) descritti da espressioni regolari
 In particolare, da ogni espressione regolare è possibile costruire algoritmicamente un automa finito non deterministico da utilizzare nel riconoscimento di token
-
+    - numero finito di stati (memoria finita)
 Definizione informale
 - Un automa finito deterministico (AFD), può essere visto come un calcolatore elementare dotato di stato interno e supporto unidirezionale di input
 - Il funzionamento dell'automa consiste di transizioni di stato a seguito della lettura di un simbolo da un dispositivo di input
@@ -619,3 +619,89 @@ Algoritmo AFD-Sim
 10:   accept --> accettazione dell'input
 11: else
 12:   reject
+
+Si noti che l'algoritmo è un vero e proprio interprete, ancorché molto
+semplice
+L'algoritmo prende in input un programma M (l'automa) e un input X per il programma, ed "esegue" M su input X
+È facile convincersi del fatto che il costo della simulazione è lineare nella lunghezza dell'input (a patto che si possa considerare costante il
+costo di valutazione della funzione δ)
+
+08/10/24
+
+Automi non deterministici
+
+Un automa finito si dice "non deterministico" (AFND) se, in almeno uno stato q, la transizione non è univocamente determinata dal simbolo di input
+In altri termini, dallo stato q e con lo stesso simbolo di input l'automa può transitare "non deterministacamente" in più di uno stato diverso
+
+Possiamo dire che in un automa non deterministico ciò che cambia è la definizione della "funzione" di transizione, che mappa coppie
+<stato,simbolo> in sottoinsiemi (anziché elementi) di Q
+
+Esempio:
+Il seguente automa è non deterministico perché nello stato 0 ci sono due transizioni etichettate con il simbolo 1
+
+Si dice che un AFND accetti il suo input, se è in grado di accettarlo
+
+Riconoscimento di stringhe da parte di un AFND
+- Si dice che un AFND M riconosce una stringa X se e soltanto se esiste una sequenza di transizioni etichettata con i simboli di X che
+termina in uno stato finale
+- È facile vedere che il primo automa della precedente trasparenza riconosce la stringa in input solo se questa termina con 1
+Si può anche facilmente dimostrare che, per ogni tale stringa, esiste una sequenza di transizioni (mosse) che porta l'automa nello stato 1
+Possiamo quindi concludere che l'automa riconosce il linguaggio (0|1)*1
+
+ϵ-transizioni (epsilon transizione) --> gli automi con le ϵ-transizioni sono non deterministici
+- Una tale transizione mappa elementi di Q x {ϵ} in Q
+- Una ϵ-transizione che collega due nodi q ed r consente all'automa di passare da q ad r "senza consumare input"
+
+Subset construction
+- L'automa deterministico dopo aver letto una certa sequenza di input deve riuscire a tenere traccia dello stato in cui si trova l'automa non deterministico
+
+A = {2,3,4,8} --> stato dell'automa deterministico
+
+ϵ-closure({2}) = {4,8}
+ϵ-closure({3}) = {}
+ϵ-closure({4}) = {8}
+ϵ-closure({8}) = {}
+ϵ-closure(A) = A = {2,3,4,8} U {4,8}
+
+A = ϵ-closure({0}) = {0,1,8} = A --> stato dell'automa deterministico che vuole simulare il non deterministico
+B = ϵ-closure({2,3}) = {2,3,4,8}    
+C = ϵ-closure({2}) = {2,4,8} --> B -- a --> ?
+D = ϵ-closure({5}) = {5,6,7} --> B -- b --> ?
+C = ϵ-closure({2}) = {2,4,8} --> C -- a --> ?
+C -- b --> ? (non andiamo da nessuna parte)
+E = ϵ-closure({8}) = {8} --> D -- a --> ?
+F = ϵ-closure({5,8}) = {5,6,7,8} --> D -- b --> ?
+E = ϵ-closure({8}) = {8} --> F -- a --> ?
+F = ϵ-closure({5,8}) = {5,6,7,8} --> F -- b --> ?
+
+Diagramma dell'automa non deterministico:   
+A -- a --> B -- a --> C (self loop)
+         |
+         b
+         |
+         D -- a --> E
+         |           ^
+         b           |
+         |           |
+         F -- a -- > |
+    (self loop)
+
+Automi finiti ed espressioni regolari
+Esempio: creare un automa non deterministico per riconoscere questa espressione regolare
+((a|b)*b)|(ab*a)
+
+a --> 2 stati
+| --> 2 stati
+b --> 2 stati
+concatenazione --> 0 stati
+* --> 2 stati
+b --> 2 stati
+| --> 2 stati
+a --> 2 stati
+b --> 2 stati
+* --> 2 stati
+a --> 2 stati
+Totale: 20 stati
+
+Esempio: creare un automa non deterministico per riconoscere questa espressione regolare
+(1|01)*(0|ϵ)
