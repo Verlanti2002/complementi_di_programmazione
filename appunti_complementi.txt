@@ -660,9 +660,27 @@ All'interno di una funzione (o blocco) si sollevano le eccezioni con il comando 
     raise NameException(arg1,arg2)
 
 Decoratori
+Un Decoratore è una funzione che prende come parametro un'altra funzione aggiungendo delle funzionalità e restituisce un'altra funzione
+senza alterare il codice sorgente della funzione passata come parametro
 Si usano i decoratori per aggiungere funzionalità ad una funzione
 
-Per esempio: misurare il tempo di esecuzione di una funzione
+Esempio:
+
+def funzione_decoratore(funzione_parametro):
+    def wrapper():
+        # wrapper significa 'incarto, confezione'
+        print("... codice da eseguire prima di 'funzione parametro' ...")
+        funzione_parametro()
+        print("... codice da eseguire dopo di 'funzione parametro' ...")
+    return wrapper
+
+@funzione_decoratore
+def mia_funzione():
+    print('Hello World!')
+
+mia_funzione()
+
+Esempio: misurare il tempo di esecuzione di una funzione
 
 import time    # Importa il modulo time per gestire il tempo
 import random  # Importa il modulo random per generare numeri casuali
