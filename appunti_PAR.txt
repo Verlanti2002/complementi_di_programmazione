@@ -697,8 +697,7 @@ Un indirizzo IP ha dimensione 32 bit, ed è solitamente rappresentato tramite i 
     Esempio: 155.185.121.7
 
 Spazio di indirizzamento
-    - Gerarchico (strutturato, logica a valenza
-     posizionale)
+    - Gerarchico (strutturato, logica a valenza posizionale)
 
 Indirizzi IP
 - Per fornire un servizio di comunicazione universale occorre un metodo che permetta di identificare univocamente ogni nodo
@@ -736,6 +735,8 @@ Classi di indirizzi ip
     - 256 (2^ ) host ID
 
 Indirizzi classless
-Oggi gli indirizzi non sono considerati in classi fisse, ma l'intero spazio di indirizzamento può essere suddiviso in blocchi di dimensioni differenti
-Si usa la notazione CIDR (Classless InterDomain Routing) dove ciascun insieme di bit del netid è indicato dal suffisso n nella notazione
+- Oggi gli indirizzi non sono considerati in classi fisse, ma l'intero spazio di indirizzamento può essere suddiviso in blocchi di dimensioni differenti
+- Si usa la notazione CIDR (Classless InterDomain Routing) dove ciascun insieme di bit del netid è indicato dal suffisso n nella notazione
     a.b.c.d/n
+- Con la notazione CIDR si elimina il concetto di indirizzamento a classi fisse A-B-C-D: l'indirizzo IP non ha più un confine fisso tra netid e hostid
+- Si utilizza la notazione slash per indicare il numero di bit usati per netid a.b.c.d/x. Es., 197.8.3.0/24
