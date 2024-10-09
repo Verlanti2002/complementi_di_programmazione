@@ -565,3 +565,177 @@ auto br0
 iface br0 inet static
     bridge_ports eth0 eth1
     address 0.0.0.0 --> indirizzo speciale (nessun indirizzo assegnato)
+
+09/10/24
+
+Vantaggi dello switch
+- Isola i domini di collisione producendo un aumento del massimo traffico totale gestibile,
+e non limita il numero degli host, né la copertura geografica
+- Può connettere tipi diversi di Ethernet (dal punto di vista fisico) dal momento che è un dispositivo "store-and-forward"
+    --> prima di inoltrare c'è l'immagazzinamento completo del pacchetto
+
+Tipi di commutazione per switch
+• Switch con commutazione store-and-forward
+    Quando un frame è instradato attraverso un commutatore store-and-forward, è raccolto e immagazzinato nella sua totalità prima
+    che il commutatore inizi a trasmetterlo sulla linea di uscita
+• Switch con commutazione cut-through (utilizzati solo per alte performance)
+    Il frame è inoltrato dalla porta di input dello switch a quella di output senza aspettare che tutto il frame sia arrivato al commutatore
+    E' sufficiente che sia giunta la parte del frame contenente l'indirizzo di destinazione e che il canale di uscita sia libero
+    PRO: miglioramento delle prestazioni
+    CONTRO: possibile inoltro di frame "difettosi" --> non viene controllato il byte di controllo
+
+Bridge/Bridging
+Dispositivo di livello 2 (link layer)
+    • Esamina l'header dei frame e li inoltrano "selettivamente" sulla base dell'indirizzo MAC della loro destinazione
+    • Analogo allo switch, ma può supportare più mezzi fisici
+    • Due tipologie di bridging:
+        • Bridging trasparente: collega due tecnologie fisiche che impiegano lo stesso sistema di indirizzamento di LV2 (collegare due reti senza l'utilizzo del livello 3)
+        • Bridging non trasparente: il bridge implementa logiche per “convertire” i protocolli di LV2, compresi indirizzi HW (poco utilizzato)
+Il sistema operativo può implementare una logica di bridging per emulare uno switch
+
+Lo switch può essere considerato un tipo particolare di bridge trasparente fornito di un alto numero di porte
+    • Analizza il livello 2 dei frame e separa i domini di collisione, ovvero separa nettamente i due mezzi fisici
+    • Può supportare collegamenti fisici a velocità di trasferimento diverse
+
+Limiti (generali) di Ethernet
+- Massima distanza fra due host in un dominio di collisione
+- Per questo si utilizzano approcci multi-livello (gerarchici) che collegano diversi switch fra di loro --> rete ad albero
+- Queste caratteristiche limitano sia il massimo numero di host collegabili, sia il raggio di azione geografico di una LAN
+Soluzione --> switch in cascata
+    Svantaggio: i messaggi broadcast (ARP Request) vengono indirizzati a tutti gli host della rete
+
+Topologie soggette a single point of failure
+- Nel caso di caduta di un ramo della rete, ciò compromette una gran parte della rete --> single point of failure
+- Per aumentare l'affidabilità di una rete, è necessario avere "ridondanza" ovvero "cammini alternativi" dalla sorgente alla destinazione
+
+Problemi della ridondanza
+Tuttavia, avendo cammini multipli possono crearsi cicli (provocano un collasso della rete) e conseguentemente gli switch potrebbero moltiplicare i frame
+    Soluzione --> spanning tree (albero di copertura completo senza cicli) riconfigurabile automaticamente
+
+Spanning Tree Protocol (STP)
+Protocollo che permette, in caso di configirazione ethernet ridondata, di disabilitare selettivamente alcune porte dello switch o bridge per eliminare i loop
+Definito nello standard IEEE 802.1D (ente che standardizza molteplici protocolli di telecomunicazioni, ecc...)
+• Permette di individuare link ridondanti in modo automatico e dinamico
+• Per funzionare, deve essere supportato ed attivato su tutti gli switch della rete locale interessata
+• Si basa sulla generazione di traffico aggiuntivo da parte degli switch
+    • Bridge Protocol Data Units (BPDUs)
+• Si basa sull'identificazione di un Root bridge (o Root switch)
+• Utilizza una logica di prioritizzazione tramite l'assegnazione di un identificativo (bridge priority) ad ogni switch
+• Lo switch con il valore minore è il Root switch --> maggiore priorità
+• L'obiettivo del protocollo è mantenere attive solo le porte che permettono a ciascuno switch di comunicare con il root switch con il costo minore
+--> BASSA OTTIMIZZAZIONE DEI COSTI (la ridondanza creata non provoca un aumento delle performance)
+
+Perchè non creare Internet come un'unica grande rete Ethernet?
+    - Sarebbe possibile supportare una quantità limitata di traffico: su una singola LAN, tutti gli host devono condividere la stessa larghezza di banda
+    - Ci sarebbe un unico grande dominio di broadcast
+
+Cablaggio strutturato: set di normative che standardizzano come noi dovremmo tracciare fisicamente delle reti fisiche
+    - Dorsale di comprensorio
+    - Dorsale di edificio
+    - Armadio di edificio
+    - Cavo di distribuzione di piano
+    - Armadio di piano
+    - Presa utente
+
+IP (Internet Protocol)
+Descritto nell'RFC (Request For Comment) 791, pubblicato dalla IETF (organizzazione legata agli standard di Internet) nel settembre 1981
+Internet: è una rete globale con un insieme di nodi e reti dotati e identificati attraverso indirizzi univoci
+- Obiettivo globale:
+    Connettere un qualsiasi numero di reti (scalabilità) eterogenee (distinzione netta fra H2N e Network) e indipendenti (alta decentralizzazione organizzativa)
+- Scelte fondamentali del progetto:
+    - Comunicazioni con paradigma "packet switching"
+    - Nodi intermedi ("router") che inoltrano i pacchetti con "intelligenza minima" (minore complessità = minori costi e maggiori performance)
+        - Logica di inoltro "stateless" --> ogni router inoltra i pacchetti soltanto sulla base del contenuto del pacchetto stesso
+        - Intelligenza delegata agli host (ai layer trasporto e applicativo, se necessaria)
+
+Nodi terminali --> Host
+Nodi intermedi --> Router
+
+Ogni nodo ha almeno un indirizzo ip univoco
+
+I nodi sono "aggregati" in reti, identificabili a loro volta da "blocchi di indirizzo"
+    --> logica di indirizzamento gerarchico
+
+Internet è un insieme di reti e host --> aspetto tecnico
+Internet è un insieme di reti gestite da organizzazione differenti (Autonomous Systems = ISP) --> aspetto organizzativo
+
+Aspetto "Fisico"
+    Un insieme di nodi e reti dotati di indirizzi univoci
+Aspetto "Funzionale"    
+    Rete globale organizzata in tante sotto-reti tramite un sistema di indirizzamento gerarchico,
+    l'inoltro avviene mediante packet switching e inoltro stateless dei pacchetti, per ottenere massime prestazioni dai router
+Aspetto "Organizzativo"
+    Un insieme di organizzazioni e aziende (Autonomous Systems - AS), che amministrano in modo esclusivo e decentralizzato
+    "porzioni di Internet" e collaborano per mantenere la rete globale e garantire un accesso "neutrale" agli utilizzatori
+
+Principi funzionali del protocollo IP
+- Survivability (sopravvivenza)
+    Se tra due host esiste un qualsiasi percorso, la comunicazione deve poter avvenire (massima affidabilità)
+- Forma a clessidra su più livelli
+    IP effettua minime assunzioni sui mezzi di trasporto sottostanti e deve funzionare per tutti i tipi di applicazioni di rete
+- Mancanza di "stato"
+    Non mantiene alcuna informazione sullo stato delle connessioni attive 
+    Il router tratta ogni pacchetto di dati in modo indipendente, senza considerare comunicazioni precedenti
+    - Net neutrality
+    Ogni pacchetto con qualsiasi mittente e destinazione è trattato nello stesso modo
+- Decentralizzazione organizzativa
+    Ogni rete è potenzialmente posseduta e gestita da un ente diverso (AS)
+
+Funzioni del livello 3 Netowrk
+1. Si garantisce l’indirizzamento univoco degli host
+    - Tutti gli host collegati a Internet devono essere identificati ed in modo esclusivo  Indirizzo IP
+2. Si definisce l'unità di trasferimento dati
+    - Definisce l'unità informativa utilizzata da Internet per trasferire dati --> Datagram IP
+3. Si chiarisce l'architettura di Internet
+    - Definisce i componenti fondamentali di una rete distribuita su scala geografica --> Autonomous Systems, Router
+4. Si illustrano le diverse funzioni di routing
+    - Gli algoritmi di routing determinano il percorso nell'ambito di una rete geografica attraverso il quale si consegnano i datagram
+    - Caratteristica best-effort: la consegna dei datagram è non affidabile
+
+Indirizzi IP (IPv4)
+Un indirizzo IP ha dimensione 32 bit, ed è solitamente rappresentato tramite i valori di ciascuno dei 4 byte che lo compongono in notazione decimale
+    Esempio: 155.185.121.7
+
+Spazio di indirizzamento
+    - Gerarchico (strutturato, logica a valenza
+     posizionale)
+
+Indirizzi IP
+- Per fornire un servizio di comunicazione universale occorre un metodo che permetta di identificare univocamente ogni nodo
+- L'indirizzo IP (32 bit) è suddiviso in 4 campi:
+    - Ciascun campo è formato da un byte (8 bit)
+    - E' separato da un punto (notazione decimale puntata o dotted notation)
+    - Esempio: 130.192.5.189
+
+Componenti dell'indirizzo IP
+Ogni indirizzo IP è solitamente strutturato in una coppia:
+    <netid, hostid>
+    - "netid" (o prefisso di rete) identifica la rete
+    - "hostid" identifica un host di quella rete
+Questa notazione consente di indicare sinteticamente intervalli contigui di indirizzi
+
+Assegnazione di indirizzi IP
+- Ogni rete gestisce in modo esclusivo tutti gli indirizzi IP sottintesi dal NetId assegnato
+- L'approccio è ricorsivo (consistente con la definizione di rete)
+    - Un blocco di indirizzi può essere assegnato a una rete locale in cui tutti gli indirizzi possono comunicare a livello H2N
+    - Oppure essere assegnato a una rete «logica» che contiene più reti («logiche» o locali)
+        - In questo caso si parla di subnetting (approfondimenti dopo)
+
+Classi di indirizzi ip
+3 classi utilizzabili per l’indirizzamento di host (classe A, classe B, classe C), più 1 classe per multicast address (classe D), più 1 classe riservata (classe E)
+    - La quantità di bit destinati al prefisso di rete dipende dalla classe cui l'indirizzo appartiene
+
+• Classe A (7 bit per netid, 24 bit per hostid)
+    - 128 (2 ) possibili network ID
+    - Oltre 16 milioni di host ID per ciascun network ID
+• Classe B (14 bit per netid, 16 bit per hostid)
+    - 16K =16384 (2 ) possibili network ID
+    - 64K = 65536 (2 ) host ID
+• Classe C (21 bit per netid, 8 bit per hostid)
+    - Oltre 2 milioni (2 ) di possibili network ID
+    - 256 (2^ ) host ID
+
+Indirizzi classless
+Oggi gli indirizzi non sono considerati in classi fisse, ma l'intero spazio di indirizzamento può essere suddiviso in blocchi di dimensioni differenti
+Si usa la notazione CIDR (Classless InterDomain Routing) dove ciascun insieme di bit del netid è indicato dal suffisso n nella notazione
+    a.b.c.d/n
