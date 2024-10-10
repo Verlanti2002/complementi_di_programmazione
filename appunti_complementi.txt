@@ -559,7 +559,7 @@ def range(stop):
 
 Spiegazione:
 1. Inizializzazione (i = 0): La variabile i viene inizializzata a 0
-2. Ciclo while: La funzione entra in un ciclo while che continua finché il valore di i è minore di stop.
+2. Ciclo while: La funzione entra in un ciclo while che continua finché il valore di i è minore di stop
 3. yield i: 
     - La parola chiave yield trasforma questa funzione in un generatore
     - Un generatore in Python restituisce un valore temporaneamente, sospende l'esecuzione e permette di riprenderla successivamente
@@ -727,3 +727,125 @@ def pippo(x, y, z):
 
 d_f(pippo)(1, 2, 3)
 pippo(1,2,3)
+
+10/10/24
+
+Esercizi funzione1 - funzione9
+
+14/10/24
+
+Reminder OOP
+
+Classe -> definisce variabili e metodi contenuti
+Oggetto -> istanza di una classe
+Astrazione -> non si guardano i dettagli implementativi (per l'utilizzatore)
+Incapsulamento -> protezione degli attributi interni
+Ereditarietà -> si ereditano comportamente (meno codice)
+Polimorfismo -> comportamento adattabile
+
+Classi - Definizione
+
+class nome_classe:
+    ...metodi, attributi
+
+Esempio:
+class esempio:
+    i = 0 # attributo di classe
+
+    def metodo1(self, arg1, arg2) # metodo
+        ...
+
+- La classe è essa stessa un oggetto (in Python tutto è un oggetto); 
+    da non confondere con gli oggetti istanziati dalla classe
+- Utilizzando l'oggetto classe è possibile istanziare oggetti di quella classe:
+    variabile = NomeClasse()
+- Accedere ai contenuti della classe (attributi di classe e metodi):
+    NomeClasse.nome_elemento
+
+Classi - Attributi di classe
+Gli attributi di classe sono attributi che appartengono all'oggetto classe e non agli oggetti istanziati di quella classe
+Sono definiti direttamente nel blocco di codice della classe
+
+Esempio:
+class esempio:
+    i = 0 # attributo 1
+    a = 'ciao' # attributo 2
+
+Possono essere acceduti direttamente dall'oggetto classe:
+    NomeClasse.i
+Ma anche utilizzando gli oggetti istanziati:
+    a = NomeClasse()
+    a.i
+
+Classi - Metodi
+Si definiscono con la parola chiave def e hanno come primo argomento obbligatorio il riferimento all’oggetto stesso
+    Tipicamente lo si chiama self, permette di accedere ai metodi/attributi dell'oggetto
+
+Esempio:
+classe esempio:
+    def metodo1(self, arg1, arg2)
+        ...
+
+Classi - chiamata dei metodi
+Quando si chiama il metodo su oggetto non si passa il self
+Siccome il metodo è chiamato su un oggetto specifico l'interprete è a conoscenza che self sarà riferito a quell'oggetto
+
+Esempio:
+i = NomeClasse()
+i.metodo1()
+
+Classi - Costruttore
+Il costruttore è un metodo speciale che inizializza l'oggetto istanziato
+Deve avere come nome __init__
+
+class NomeClasse():
+    def __init__(self, arg1, arg2):
+        ...
+
+Nel costruttore si inizializzano gli attributi dell'oggetto (non quelli di classe)
+Lo si fa attraverso self
+
+class NomeClasse():
+    def __init__(self, arg1, arg2):
+        self.a = 10
+
+Il costruttore viene chiamato automaticamente quando viene istanziato l'oggetto
+    a = NomeClasse()
+
+Classi - Metodi static e class
+Una classe può avere metodi che possono essere chiamati sulla classe stessa invece che sull'istanza
+    - metodi statici @staticmethod
+    - metodi class @classmethod
+
+Metodi statici @staticmethod
+class NomeClasse:
+    @staticmethod
+    def static_method(x):
+        print(x)
+
+Metodi class @classmethod
+class NomeClasse:
+    @classmethod
+    def class_method(self, x) # ATTENZIONE: self in questo caso è l'oggetto classe e non l'oggetto istanziato
+        print(x)
+
+I metodi statici e class vengono chiamati come altri metodi ma utilizzando l'oggetto class
+Questo implica che non vi è un oggetto istanziato e quindi tali metodi potranno accedere solo agli attributi di classe
+
+Classi - Ciclo di Inizializzazione
+Quando si istanzia un oggetto
+    a = NomeClasse()
+l'interprete chiama due metodi:
+    - il primo per creare l'oggetto --> è il metodo __new__ (prende in ingresso una classe e restituisce un oggetto di quella classe)
+    - il secondo per inizializzarlo --> è il costruttore __init__ (non restituisce nulla in quanto l'oggetto esiste già, self, che viene inizializzato)
+
+Classi - Metodi/attributi privati
+In Python i metodi e gli attributi di una classe sono pubblici
+Per rendere privata un'entità si agisce sul nome:
+    le entità che iniziano con 2 underscore __ e terminano con massimo un underscore _ vengono considerati privati
+
+class Prova:
+    def __init__(self):
+        self.__priv = 'privato'
+
+Classi - Metodi speciali
